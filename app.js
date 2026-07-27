@@ -259,6 +259,8 @@ const els = {
   routeLinks: [...document.querySelectorAll("[data-route-link]")],
 };
 
+let navCardPreviewLink = null;
+
 function escapeHtml(value) {
   return String(value)
     .replaceAll("&", "&amp;")
@@ -508,26 +510,56 @@ function renderTimeline() {
     .join("");
 }
 
-function updateNavCardIndicator() {
+function getActiveNavCardLink() {
+  if (!els.navCardLinks) return null;
+
+  return els.navCardLinks.querySelector("a.active") ?? els.navCardLinks.querySelector("a");
+}
+
+function getNavCardIndicatorTarget() {
+  if (navCardPreviewLink && els.navCardLinks?.contains(navCardPreviewLink)) {
+    return navCardPreviewLink;
+  }
+
+  return getActiveNavCardLink();
+}
+
+function moveNavCardIndicatorTo(link) {
   if (!els.navCardLinks || !els.navCardIndicator) return;
   if (els.navCardLinks.offsetParent === null) return;
 
-  const activeLink =
-    els.navCardLinks.querySelector("a.active") ?? els.navCardLinks.querySelector("a");
-
-  if (!activeLink) {
+  if (!link) {
     els.navCardIndicator.style.opacity = "0";
     return;
   }
 
-  els.navCardIndicator.style.width = `${activeLink.offsetWidth}px`;
-  els.navCardIndicator.style.height = `${activeLink.offsetHeight}px`;
-  els.navCardIndicator.style.transform = `translate3d(${activeLink.offsetLeft}px, ${activeLink.offsetTop}px, 0)`;
+  els.navCardIndicator.style.width = `${link.offsetWidth}px`;
+  els.navCardIndicator.style.height = `${link.offsetHeight}px`;
+  els.navCardIndicator.style.transform = `translate3d(${link.offsetLeft}px, ${link.offsetTop}px, 0)`;
   els.navCardIndicator.style.opacity = "1";
+}
+
+function updateNavCardIndicator() {
+  moveNavCardIndicatorTo(getNavCardIndicatorTarget());
 }
 
 function queueNavCardIndicatorUpdate() {
   window.requestAnimationFrame(updateNavCardIndicator);
+}
+
+function setNavCardPreview(link) {
+  if (!els.navCardLinks?.contains(link)) return;
+  if (navCardPreviewLink === link) return;
+
+  navCardPreviewLink = link;
+  queueNavCardIndicatorUpdate();
+}
+
+function clearNavCardPreview() {
+  if (!navCardPreviewLink) return;
+
+  navCardPreviewLink = null;
+  queueNavCardIndicatorUpdate();
 }
 
 function refreshLiveTime() {
@@ -578,6 +610,36 @@ function bindEvents() {
     state.route = getRouteFromHash();
     updateRouteUi();
   });
+
+  if (els.navCardLinks) {
+    els.navCardLinks.addEventListener("pointerover", (event) => {
+      if (!(event.target instanceof Element)) return;
+
+      const target = event.target.closest("a");
+      if (!target || !els.navCardLinks.contains(target)) return;
+
+      setNavCardPreview(target);
+    });
+
+    els.navCardLinks.addEventListener("pointerleave", clearNavCardPreview);
+
+    els.navCardLinks.addEventListener("focusin", (event) => {
+      if (!(event.target instanceof Element)) return;
+
+      const target = event.target.closest("a");
+      if (!target || !els.navCardLinks.contains(target)) return;
+
+      setNavCardPreview(target);
+    });
+
+    els.navCardLinks.addEventListener("focusout", (event) => {
+      if (event.relatedTarget instanceof Element && els.navCardLinks.contains(event.relatedTarget)) {
+        return;
+      }
+
+      clearNavCardPreview();
+    });
+  }
 
   els.projectFilters.addEventListener("click", (event) => {
     const target = event.target.closest("[data-filter]");
