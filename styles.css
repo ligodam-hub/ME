@@ -1244,6 +1244,7 @@ body[data-route="home"] main {
   content: "\25CE";
 }
 
+.nav-card__links a.is-preview .nav-card__glyph,
 .nav-card__links a:hover .nav-card__glyph,
 .nav-card__links a.active .nav-card__glyph {
   color: white;

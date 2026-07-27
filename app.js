@@ -768,11 +768,20 @@ function queueNavCardIndicatorUpdate() {
   window.requestAnimationFrame(updateNavCardIndicator);
 }
 
+function syncNavCardPreviewState() {
+  if (!els.navCardLinks) return;
+
+  els.navCardLinks.querySelectorAll("a").forEach((link) => {
+    link.classList.toggle("is-preview", link === navCardPreviewLink);
+  });
+}
+
 function setNavCardPreview(link) {
   if (!els.navCardLinks?.contains(link)) return;
   if (navCardPreviewLink === link) return;
 
   navCardPreviewLink = link;
+  syncNavCardPreviewState();
   queueNavCardIndicatorUpdate();
 }
 
@@ -780,6 +789,7 @@ function clearNavCardPreview() {
   if (!navCardPreviewLink) return;
 
   navCardPreviewLink = null;
+  syncNavCardPreviewState();
   queueNavCardIndicatorUpdate();
 }
 
