@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ME | Portfolio & Navigation Hub</title>
+    <title>ME | 作品集与导航站</title>
     <meta
       name="description"
-      content="A portfolio-first navigation hub with room for a future knowledge base."
+      content="先放作品集和导航，再慢慢长成知识库的个人网站。"
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -56,58 +56,100 @@
 
       <main>
         <section class="route-section route-active" data-route="home">
-          <div class="hero-grid">
-            <div class="hero-copy">
-              <p class="eyebrow" id="hero-status">Available for internships & collaborations</p>
-              <h1 id="hero-title">Build. Ship. Leave a clear trail.</h1>
-              <p class="hero-description" id="hero-description">
-                A portfolio-first site for showcasing projects, curating useful links,
-                and holding space for a knowledge base that will grow over time.
-              </p>
-              <div class="hero-actions">
-                <a class="primary-button" href="#/projects">View Projects</a>
-                <a class="secondary-button" href="#/explore">Open Navigation Hub</a>
-              </div>
-              <div class="hero-stats" id="stats-grid"></div>
-            </div>
-
-            <aside class="spotlight-card">
-              <div class="spotlight-header">
+          <div class="home-snapshot">
+            <article class="home-card nav-card">
+              <div class="nav-card__profile">
+                <div class="nav-card__avatar"></div>
                 <div>
-                  <p class="mini-label">Spotlight</p>
-                  <h2>Featured build of the day</h2>
+                  <strong id="brand-name-home">ME</strong>
+                  <p id="hero-status">开发中</p>
                 </div>
-                <button class="icon-button" id="shuffle-spotlight" type="button">
-                  Shuffle
-                </button>
               </div>
-              <div id="spotlight-panel"></div>
-            </aside>
-          </div>
-
-          <div class="panel-grid home-panels">
-            <article class="panel">
-              <div class="panel-heading">
-                <p class="mini-label">Now Building</p>
-                <h3>Current direction</h3>
-              </div>
-              <p id="current-focus">
-                Shipping a portfolio and navigation station first, then layering in a
-                personal knowledge base once the structure feels right.
-              </p>
-              <a class="inline-link" href="#/notes">See knowledge base plan</a>
+              <p class="nav-card__label">GENERAL</p>
+              <nav class="nav-card__links">
+                <a data-route-link href="#/home">
+                  <span class="nav-card__glyph nav-card__glyph--recent" aria-hidden="true"></span>
+                  <span class="nav-card__link-text">近期文章</span>
+                </a>
+                <a data-route-link href="#/projects">
+                  <span class="nav-card__glyph nav-card__glyph--projects" aria-hidden="true"></span>
+                  <span class="nav-card__link-text">我的项目</span>
+                </a>
+                <a data-route-link href="#/about">
+                  <span class="nav-card__glyph nav-card__glyph--about" aria-hidden="true"></span>
+                  <span class="nav-card__link-text">关于网站</span>
+                </a>
+                <a data-route-link href="#/explore">
+                  <span class="nav-card__glyph nav-card__glyph--share" aria-hidden="true"></span>
+                  <span class="nav-card__link-text">推荐分享</span>
+                </a>
+                <a data-route-link href="#/notes">
+                  <span class="nav-card__glyph nav-card__glyph--blogs" aria-hidden="true"></span>
+                  <span class="nav-card__link-text">优秀博客</span>
+                </a>
+              </nav>
             </article>
 
-            <article class="panel">
-              <div class="panel-heading">
-                <p class="mini-label">Quick Access</p>
-                <h3>Fast routes</h3>
+            <article class="home-card collage-card" aria-hidden="true">
+              <div class="collage-card__rail"></div>
+              <div class="collage-stack">
+                <div class="collage-note note-a"></div>
+                <div class="collage-note note-b"></div>
+                <div class="collage-note note-c"></div>
+                <div class="collage-note note-d"></div>
+                <div class="collage-note note-e"></div>
               </div>
-              <div class="chip-row">
-                <a class="chip-link" href="#/projects">Selected work</a>
-                <a class="chip-link" href="#/explore">Useful links</a>
-                <a class="chip-link" href="#/about">Story & process</a>
+            </article>
+
+            <a class="home-card action-card" href="#/notes">
+              <span class="action-card__icon" aria-hidden="true">&#9998;</span>
+              <span>写文章</span>
+            </a>
+
+            <article class="home-card greeting-card">
+              <div class="greeting-card__avatar"></div>
+              <p class="eyebrow" id="home-date">2026/7/27 周一</p>
+              <h1 id="hero-title">Good Morning<br />I'm lvy, nice to meet you!</h1>
+              <p class="hero-description" id="hero-description">一个先放作品、再慢慢长成知识库的小站。</p>
+            </article>
+
+            <article class="home-card clock-card">
+              <div class="digital-clock" id="digital-clock">11:25</div>
+            </article>
+
+            <article class="home-card calendar-card">
+              <p class="calendar-title" id="calendar-month">2026/7/27 周一</p>
+              <div class="calendar-week" id="calendar-week"></div>
+              <div class="calendar-days" id="calendar-days"></div>
+            </article>
+
+            <article class="home-card latest-card" id="latest-card"></article>
+
+            <div class="social-row social-row-home" id="social-row"></div>
+
+            <article class="home-card recommend-card">
+              <div class="spotlight-header">
+                <div>
+                  <p class="mini-label">随机推荐</p>
+                  <h2>随手看看</h2>
+                </div>
+                <button class="icon-button" id="shuffle-spotlight" type="button">换一个</button>
               </div>
+              <div id="spotlight-panel"></div>
+            </article>
+
+            <article class="home-card music-card">
+              <div class="music-card__meta">
+                <span class="music-card__icon" aria-hidden="true">&#9835;</span>
+                <div>
+                  <strong>Close To You</strong>
+                  <p>small mood module</p>
+                </div>
+              </div>
+              <div class="music-card__bar">
+                <span></span>
+              </div>
+              <button class="music-card__play" type="button" aria-label="Play">&#9654;</button>
             </article>
           </div>
         </section>
@@ -116,7 +158,7 @@
           <div class="section-heading">
             <div>
               <p class="eyebrow">Projects</p>
-              <h2>Portfolio that can be filtered, searched, and scanned quickly</h2>
+              <h2>Selected work, arranged for scanning instead of dumping</h2>
             </div>
             <p class="section-note" id="project-count"></p>
           </div>
@@ -144,10 +186,10 @@
           <div class="section-heading">
             <div>
               <p class="eyebrow">Explore</p>
-              <h2>Navigation hub for everything worth resurfacing</h2>
+              <h2>A launchpad for links that should stay easy to resurface</h2>
             </div>
             <p class="section-note">
-              Use this page like a curated launchpad instead of a link dump.
+              This page is meant to feel curated, not like a storage drawer.
             </p>
           </div>
           <div class="panel-grid" id="explore-groups"></div>
@@ -157,11 +199,11 @@
           <div class="section-heading">
             <div>
               <p class="eyebrow">Notes</p>
-              <h2>Knowledge base placeholder, ready for a cleaner second phase</h2>
+              <h2>Knowledge base placeholder, structured before it grows dense</h2>
             </div>
             <p class="section-note">
-              The structure is prepared now so the content can grow without making the
-              site feel unfinished.
+              The notes area is staged on purpose so the site can ship without fake
+              fullness.
             </p>
           </div>
 
@@ -188,11 +230,10 @@
           <div class="section-heading">
             <div>
               <p class="eyebrow">About</p>
-              <h2>Story, strengths, and the logic behind the site</h2>
+              <h2>Build notes, profile, and the logic holding this site together</h2>
             </div>
             <p class="section-note">
-              This page explains what the site is trying to become, not just what it
-              looks like today.
+              This version explains the person and the structure at the same time.
             </p>
           </div>
 
@@ -207,15 +248,11 @@
 
             <article class="panel">
               <div class="panel-heading">
-                <p class="mini-label">Site Logic</p>
-                <h3>Why this version works first</h3>
+                <p class="mini-label">Profile</p>
+                <h3>A few lines about this site owner</h3>
               </div>
-              <ul class="bullet-list">
-                <li>Portfolio comes first so the site is useful immediately.</li>
-                <li>Navigation groups prevent good resources from getting buried.</li>
-                <li>Knowledge base is staged with placeholders instead of fake content.</li>
-                <li>Hash routing keeps GitHub Pages deployment simple and reliable.</li>
-              </ul>
+              <ul class="bullet-list" id="profile-list"></ul>
+              <blockquote class="quote-block" id="quote-text"></blockquote>
             </article>
           </div>
         </section>
@@ -225,7 +262,7 @@
         <p>
           <span id="footer-name">ME</span>
           <span class="footer-dot">/</span>
-          <span>Portfolio-first personal hub</span>
+          <span>A quiet place for projects, links, and future notes</span>
         </p>
         <p>&copy; <span id="footer-year"></span></p>
       </footer>

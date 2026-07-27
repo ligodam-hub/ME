@@ -1,20 +1,59 @@
 const siteConfig = {
-  brand: "Ligodam",
-  role: "Portfolio & Navigation Hub",
-  status: "Portfolio-first launch in progress",
-  title: "Build the front door first, then let the knowledge base grow behind it.",
-  description:
-    "This version focuses on a clean portfolio, a practical navigation hub, and a staged notes area so the site already feels alive before the long-form content arrives.",
-  currentFocus:
-    "Turn the site into a reliable personal home base: visible projects, clear navigation, and a reserved structure for future notes.",
+  brand: "lvy-neko",
+  homeBrand: "lvy",
+  role: "作品集 / 导航站 / 知识库预留",
+  status: "开发中",
+  description: "一个先放作品、再慢慢长成知识库的小站。",
   contact: {
     email: "your@email.com",
   },
-  stats: [
-    { label: "Launch mode", value: "v1", hint: "Portfolio + hub first" },
-    { label: "Core routes", value: "5", hint: "Home, projects, explore, notes, about" },
-    { label: "Deploy target", value: "GitHub", hint: "Static and Pages-friendly" },
+  socials: [
+    {
+      label: "GitHub",
+      href: "https://github.com/ligodam-hub/ME",
+      external: true,
+      tone: "github",
+      badge: "GH",
+    },
+    {
+      label: "Bilibili",
+      href: "#/projects",
+      external: false,
+      tone: "bilibili",
+      badge: "B",
+    },
+    {
+      label: "小红书",
+      href: "#/explore",
+      external: false,
+      tone: "xiaohongshu",
+      badge: "小",
+    },
+    {
+      label: "Mail",
+      href: "#/about",
+      external: false,
+      action: "copy-email",
+      tone: "mail",
+      badge: "@",
+    },
   ],
+  latestUpdates: [
+    {
+      title: "500h播客纪念&分享",
+      excerpt: "可以听到许多有趣的视角。",
+      date: "2026/4/22",
+      href: "#/notes",
+      thumb: "500h",
+    },
+  ],
+  aboutBullets: [
+    "先把作品集和导航站做好，知识库后续再接进来。",
+    "页面先追求有个人气质，再逐步补齐真实内容。",
+    "偏好清晰、柔和、但不无聊的界面表达。",
+    "这一版重点是结构、路由和交互先跑通，再继续细化内容。",
+  ],
+  quote: "先把前门搭好，再让内容慢慢住进来。",
 };
 
 const projects = [
@@ -24,7 +63,7 @@ const projects = [
     year: "2026",
     status: "Building",
     summary:
-      "A personal site that acts as a portfolio, launchpad, and eventually a knowledge base without forcing all three jobs into the first release.",
+      "A personal website that works as portfolio, navigation hub, and future knowledge base without forcing every layer into the first release.",
     tags: ["portfolio", "navigation", "static-site"],
     href: "#/projects",
     externalLabel: "Current build",
@@ -36,7 +75,7 @@ const projects = [
     year: "2026",
     status: "Concept",
     summary:
-      "A visual collection of interaction experiments, UI systems, and polished references worth revisiting when new ideas need shape.",
+      "A visual collection of interaction experiments, layout ideas, and UI references worth resurfacing when a page needs more character.",
     tags: ["ui", "motion", "design-system"],
     href: "#/explore",
     externalLabel: "See exploration hub",
@@ -48,7 +87,7 @@ const projects = [
     year: "2025",
     status: "Ongoing",
     summary:
-      "A structured index of shipped projects with context, trade-offs, and why each one matters beyond a screenshot.",
+      "A clearer index of shipped work that explains what each project is, why it exists, and where to go next.",
     tags: ["case-study", "engineering", "portfolio"],
     href: "#/about",
     externalLabel: "Read process",
@@ -60,7 +99,7 @@ const projects = [
     year: "2026",
     status: "Queued",
     summary:
-      "A staged note system that will expand into curated essays, learning trails, and reusable references once the shell of the site stabilizes.",
+      "A staged notes system for essays, learning trails, and reference pages once the shell of the site feels stable.",
     tags: ["notes", "writing", "knowledge-base"],
     href: "#/notes",
     externalLabel: "View roadmap",
@@ -72,7 +111,7 @@ const projects = [
     year: "2026",
     status: "Running",
     summary:
-      "A curated layer over raw bookmarks so links are grouped by intent and stay useful under pressure.",
+      "A curated layer over raw bookmarks so links are grouped by intent and remain useful under pressure.",
     tags: ["resources", "curation", "workflow"],
     href: "#/explore",
     externalLabel: "Browse links",
@@ -84,7 +123,7 @@ const projects = [
     year: "2026",
     status: "Planning",
     summary:
-      "A content flow that connects projects, notes, and short updates without making the site feel crowded.",
+      "A content flow that ties projects, notes, and small updates together without making the homepage feel crowded.",
     tags: ["content", "strategy", "growth"],
     href: "#/notes",
     externalLabel: "Open notes plan",
@@ -98,22 +137,22 @@ const exploreGroups = [
     description: "Launch pages, demos, and the pieces that make the site feel active.",
     links: [
       { label: "Selected Projects", href: "#/projects" },
-      { label: "Featured Spotlight", href: "#/home" },
+      { label: "Featured Pick", href: "#/home" },
       { label: "Story & Process", href: "#/about" },
     ],
   },
   {
     title: "Collect",
-    description: "Keep useful inputs visible so the future knowledge base has strong raw material.",
+    description: "Keep useful inputs visible so the future notes archive has strong raw material.",
     links: [
       { label: "Notes Roadmap", href: "#/notes" },
       { label: "Reserved Topics", href: "#/notes" },
-      { label: "Navigation Philosophy", href: "#/about" },
+      { label: "Navigation Logic", href: "#/about" },
     ],
   },
   {
     title: "Connect",
-    description: "Make it easy for collaborators, recruiters, or curious readers to know where to go next.",
+    description: "Make it easy for curious visitors to know where to go next.",
     links: [
       { label: "Copy Contact Email", href: "#/about", action: "copy-email" },
       { label: "Project Overview", href: "#/projects" },
@@ -175,17 +214,32 @@ const state = {
 };
 
 const categories = ["All", ...new Set(projects.map((project) => project.category))];
+const calendarWeekLabels = [
+  "\u4e00",
+  "\u4e8c",
+  "\u4e09",
+  "\u56db",
+  "\u4e94",
+  "\u516d",
+  "\u65e5",
+];
 
 const els = {
   brandName: document.getElementById("brand-name"),
+  brandNameHome: document.getElementById("brand-name-home"),
   brandRole: document.getElementById("brand-role"),
   heroStatus: document.getElementById("hero-status"),
   heroTitle: document.getElementById("hero-title"),
   heroDescription: document.getElementById("hero-description"),
-  currentFocus: document.getElementById("current-focus"),
   footerName: document.getElementById("footer-name"),
   footerYear: document.getElementById("footer-year"),
-  statsGrid: document.getElementById("stats-grid"),
+  homeDate: document.getElementById("home-date"),
+  digitalClock: document.getElementById("digital-clock"),
+  calendarMonth: document.getElementById("calendar-month"),
+  calendarWeek: document.getElementById("calendar-week"),
+  calendarDays: document.getElementById("calendar-days"),
+  socialRow: document.getElementById("social-row"),
+  latestCard: document.getElementById("latest-card"),
   spotlightPanel: document.getElementById("spotlight-panel"),
   projectFilters: document.getElementById("project-filters"),
   projectSearch: document.getElementById("project-search"),
@@ -196,6 +250,8 @@ const els = {
   roadmapList: document.getElementById("roadmap-list"),
   noteTopics: document.getElementById("note-topics"),
   timelineList: document.getElementById("timeline-list"),
+  profileList: document.getElementById("profile-list"),
+  quoteText: document.getElementById("quote-text"),
   menuToggle: document.getElementById("menu-toggle"),
   siteNav: document.getElementById("site-nav"),
   copyEmail: document.getElementById("copy-email"),
@@ -205,7 +261,7 @@ const els = {
 };
 
 function escapeHtml(value) {
-  return value
+  return String(value)
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")
@@ -223,27 +279,103 @@ function getRouteFromHash() {
   return allowedRoutes.includes(route) ? route : "home";
 }
 
-function renderShell() {
-  els.brandName.textContent = siteConfig.brand;
-  els.brandRole.textContent = siteConfig.role;
-  els.heroStatus.textContent = siteConfig.status;
-  els.heroTitle.textContent = siteConfig.title;
-  els.heroDescription.textContent = siteConfig.description;
-  els.currentFocus.textContent = siteConfig.currentFocus;
-  els.footerName.textContent = siteConfig.brand;
-  els.footerYear.textContent = new Date().getFullYear();
+function getGreetingByHour(hour) {
+  if (hour < 5) return "Good Night";
+  if (hour < 12) return "Good Morning";
+  if (hour < 18) return "Good Afternoon";
+  return "Good Evening";
+}
 
-  els.statsGrid.innerHTML = siteConfig.stats
-    .map(
-      (stat) => `
-        <article class="stat-card">
-          <strong>${escapeHtml(stat.value)}</strong>
-          <span>${escapeHtml(stat.label)}</span>
-          <p class="project-meta">${escapeHtml(stat.hint)}</p>
-        </article>
-      `,
-    )
+function formatDateLine() {
+  const now = new Date();
+  const weekday = new Intl.DateTimeFormat("zh-CN", { weekday: "short" }).format(now);
+  return `${now.getFullYear()}/${now.getMonth() + 1}/${now.getDate()} ${weekday}`;
+}
+
+function formatClock() {
+  const now = new Date();
+  return now.toLocaleTimeString("en-GB", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+}
+
+function renderSocialLink(link) {
+  const target = link.external ? ' target="_blank" rel="noreferrer"' : "";
+  const actionAttr = link.action ? ` data-action="${escapeHtml(link.action)}"` : "";
+  const toneClass =
+    link.tone && /^[a-z0-9-]+$/i.test(link.tone) ? ` social-link--${link.tone}` : "";
+  const badge = link.badge
+    ? `<span class="social-link__badge" aria-hidden="true">${escapeHtml(link.badge)}</span>`
+    : "";
+
+  return `<a class="social-link${toneClass}" href="${escapeHtml(link.href)}"${target}${actionAttr}>${badge}<span>${escapeHtml(link.label)}</span></a>`;
+}
+
+function renderCalendar() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth();
+  const today = now.getDate();
+  const weekday = new Intl.DateTimeFormat("zh-CN", { weekday: "short" }).format(now);
+  const monthLabel = `${year}/${month + 1}/${today} ${weekday}`;
+  const firstDay = new Date(year, month, 1);
+  const lastDay = new Date(year, month + 1, 0);
+  const mondayIndex = (firstDay.getDay() + 6) % 7;
+  const totalCells = Math.ceil((mondayIndex + lastDay.getDate()) / 7) * 7;
+
+  els.calendarMonth.textContent = monthLabel;
+  els.calendarWeek.innerHTML = calendarWeekLabels
+    .map((label) => `<span>${escapeHtml(label)}</span>`)
     .join("");
+
+  els.calendarDays.innerHTML = Array.from({ length: totalCells }, (_, index) => {
+    const dateNumber = index - mondayIndex + 1;
+    if (dateNumber < 1 || dateNumber > lastDay.getDate()) {
+      return '<span class="calendar-day is-empty"></span>';
+    }
+
+    const activeClass = dateNumber === today ? " is-today" : "";
+    return `<span class="calendar-day${activeClass}">${dateNumber}</span>`;
+  }).join("");
+}
+
+function renderShell() {
+  const greeting = getGreetingByHour(new Date().getHours());
+  const heroTitle = `${escapeHtml(greeting)}<br />I'm <span class="accent-name">${escapeHtml(siteConfig.homeBrand)}</span>, nice to meet you!`;
+
+  els.brandName.textContent = siteConfig.homeBrand;
+  els.brandRole.textContent = siteConfig.role;
+  els.brandNameHome.textContent = siteConfig.brand;
+  els.heroStatus.textContent = siteConfig.status;
+  els.heroTitle.innerHTML = heroTitle;
+  els.heroDescription.textContent = siteConfig.description;
+  els.footerName.textContent = siteConfig.homeBrand;
+  els.footerYear.textContent = new Date().getFullYear();
+  els.homeDate.textContent = formatDateLine();
+  els.digitalClock.textContent = formatClock();
+  els.socialRow.innerHTML = siteConfig.socials.map(renderSocialLink).join("");
+
+  const latest = siteConfig.latestUpdates[0];
+  els.latestCard.innerHTML = `
+    <p class="mini-label">最新文章</p>
+    <div class="latest-card__entry">
+      <div class="latest-card__thumb">${escapeHtml(latest.thumb || "NEW")}</div>
+      <div class="latest-card__body">
+        <h3>${escapeHtml(latest.title)}</h3>
+        <p>${escapeHtml(latest.excerpt)}</p>
+        <span class="project-meta">${escapeHtml(latest.date)}</span>
+      </div>
+    </div>
+  `;
+
+  els.profileList.innerHTML = siteConfig.aboutBullets
+    .map((bullet) => `<li>${escapeHtml(bullet)}</li>`)
+    .join("");
+  els.quoteText.textContent = siteConfig.quote;
+
+  renderCalendar();
 }
 
 function renderSpotlight() {
@@ -401,6 +533,20 @@ function renderTimeline() {
     .join("");
 }
 
+function refreshLiveTime() {
+  const greeting = getGreetingByHour(new Date().getHours());
+  const nextTitle = `${escapeHtml(greeting)}<br />I'm <span class="accent-name">${escapeHtml(siteConfig.homeBrand)}</span>, nice to meet you!`;
+  const nextDateLine = formatDateLine();
+
+  els.digitalClock.textContent = formatClock();
+  els.heroTitle.innerHTML = nextTitle;
+
+  if (els.homeDate.textContent !== nextDateLine) {
+    els.homeDate.textContent = nextDateLine;
+    renderCalendar();
+  }
+}
+
 function updateRouteUi() {
   els.routeSections.forEach((section) => {
     const isActive = section.dataset.route === state.route;
@@ -412,6 +558,7 @@ function updateRouteUi() {
     link.classList.toggle("active", isActive);
   });
 
+  document.body.setAttribute("data-route", state.route);
   els.siteNav.classList.remove("open");
   els.menuToggle.setAttribute("aria-expanded", "false");
 }
@@ -482,6 +629,7 @@ function init() {
   renderTimeline();
   updateRouteUi();
   bindEvents();
+  window.setInterval(refreshLiveTime, 1000);
 }
 
 init();
