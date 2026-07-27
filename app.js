@@ -307,12 +307,15 @@ const timeline = [
   },
 ];
 
-const allowedRoutes = new Set(["home", "articles", "projects", "about", "share", "blogs"]);
+const allowedRoutes = new Set(["home", "articles", "write", "projects", "about", "share", "blogs"]);
 const categories = ["All", ...new Set(projects.map((project) => project.category))];
 const shareFilters = ["全部", ...new Set(shareResources.flatMap((resource) => resource.tags))];
 const blogFilters = ["全部", ...new Set(blogLinks.map((link) => link.kind))];
 const calendarWeekLabels = ["一", "二", "三", "四", "五", "六", "日"];
 const SETTINGS_STORAGE_KEY = "me-home-ui-settings-v1";
+const ARTICLE_STORAGE_KEY = "me-custom-articles-v1";
+const WRITER_DRAFT_STORAGE_KEY = "me-writer-draft-v1";
+const writerCategories = ["Uncategorized", "Tech", "Agent", "Tools", "Update", "Study", "Design", "Share", "Notes"];
 const settingsThemeFields = [
   { key: "accent", label: "主题色" },
   { key: "accentStrong", label: "强调深色" },
@@ -453,6 +456,7 @@ const state = {
   shareQuery: "",
   blogFilter: "全部",
   blogQuery: "",
+  writerPreview: false,
   isTransitioning: false,
   pendingRoute: "",
 };
@@ -477,6 +481,34 @@ const els = {
   socialRow: document.getElementById("social-row"),
   latestCard: document.getElementById("latest-card"),
   articleArchive: document.getElementById("article-archive"),
+  articleManageBar: document.getElementById("article-manage-bar"),
+  articleManageHint: document.getElementById("article-manage-hint"),
+  articleManageToggle: document.getElementById("article-manage-toggle"),
+  articleSelectAll: document.getElementById("article-select-all"),
+  articleManageCancel: document.getElementById("article-manage-cancel"),
+  articleDeleteSelected: document.getElementById("article-delete-selected"),
+  writerStatus: document.getElementById("writer-status"),
+  writerImportMd: document.getElementById("writer-import-md"),
+  writerPreviewToggle: document.getElementById("writer-preview-toggle"),
+  writerPublish: document.getElementById("writer-publish"),
+  writerFileInput: document.getElementById("writer-file-input"),
+  writerTitle: document.getElementById("writer-title"),
+  writerSlug: document.getElementById("writer-slug"),
+  writerContent: document.getElementById("writer-content"),
+  writerPreview: document.getElementById("writer-preview"),
+  writerPreviewCover: document.getElementById("writer-preview-cover"),
+  writerPreviewMeta: document.getElementById("writer-preview-meta"),
+  writerPreviewTitle: document.getElementById("writer-preview-title"),
+  writerPreviewSummary: document.getElementById("writer-preview-summary"),
+  writerPreviewContent: document.getElementById("writer-preview-content"),
+  writerCoverPreview: document.getElementById("writer-cover-preview"),
+  writerCover: document.getElementById("writer-cover"),
+  writerSummary: document.getElementById("writer-summary"),
+  writerTags: document.getElementById("writer-tags"),
+  writerCategory: document.getElementById("writer-category"),
+  writerDate: document.getElementById("writer-date"),
+  writerHidden: document.getElementById("writer-hidden"),
+  writerImages: document.getElementById("writer-images"),
   projectFilters: document.getElementById("project-filters"),
   projectSearch: document.getElementById("project-search"),
   projectGrid: document.getElementById("project-grid"),
@@ -517,6 +549,7 @@ const els = {
   settingsSave: document.getElementById("settings-save"),
   settingsRandomizeTheme: document.getElementById("settings-randomize-theme"),
   settingsResetLayout: document.getElementById("settings-reset-layout"),
+  settingsEnterDrag: document.getElementById("settings-enter-drag"),
   settingsThemeFields: document.getElementById("settings-theme-fields"),
   settingsPresetList: document.getElementById("settings-preset-list"),
   settingsLayoutList: document.getElementById("settings-layout-list"),
@@ -529,6 +562,12 @@ let navCardIndicatorFrame = 0;
 let savedUiSettings = null;
 let draftUiSettings = null;
 let activeSettingsTab = "site";
+let isLayoutDragMode = false;
+let layoutDragSession = null;
+let customArticles = [];
+let writerDraft = null;
+let articleManageMode = false;
+let selectedArticleIds = new Set();
 
 function escapeHtml(value) {
   return String(value)
@@ -714,6 +753,278 @@ function prefersReducedMotion() {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
+function parseDateValue(value, fallback = new Date()) {
+  const parsed = new Date(value);
+  return Number.isNaN(parsed.getTime()) ? new Date(fallback) : parsed;
+}
+
+function formatDateTimeLocalValue(value = new Date()) {
+  const date = parseDateValue(value);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
+}
+
+function formatSlashDate(value) {
+  const date = parseDateValue(value);
+  return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
+}
+
+function formatArchiveDate(value) {
+  const date = parseDateValue(value);
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${month}-${day}`;
+}
+
+function slugify(value) {
+  const normalized = String(value || "")
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
+  return normalized.slice(0, 48);
+}
+
+function stripMarkdown(value) {
+  return String(value || "")
+    .replace(/^#{1,6}\s+/gm, "")
+    .replace(/!\[[^\]]*\]\([^)]+\)/g, " ")
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+    .replace(/[*_~`>#-]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function renderMarkdownInline(text) {
+  return escapeHtml(text)
+    .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noreferrer">$1</a>')
+    .replace(/`([^`]+)`/g, "<code>$1</code>")
+    .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
+    .replace(/\*([^*]+)\*/g, "<em>$1</em>");
+}
+
+function markdownToHtml(markdown) {
+  const lines = String(markdown || "").replace(/\r/g, "").split("\n");
+  const html = [];
+  let inList = false;
+
+  const closeList = () => {
+    if (!inList) return;
+    html.push("</ul>");
+    inList = false;
+  };
+
+  lines.forEach((line) => {
+    const trimmed = line.trim();
+    if (!trimmed) {
+      closeList();
+      return;
+    }
+
+    if (/^###\s+/.test(trimmed)) {
+      closeList();
+      html.push(`<h4>${renderMarkdownInline(trimmed.replace(/^###\s+/, ""))}</h4>`);
+      return;
+    }
+
+    if (/^##\s+/.test(trimmed)) {
+      closeList();
+      html.push(`<h3>${renderMarkdownInline(trimmed.replace(/^##\s+/, ""))}</h3>`);
+      return;
+    }
+
+    if (/^#\s+/.test(trimmed)) {
+      closeList();
+      html.push(`<h2>${renderMarkdownInline(trimmed.replace(/^#\s+/, ""))}</h2>`);
+      return;
+    }
+
+    if (/^[-*]\s+/.test(trimmed)) {
+      if (!inList) {
+        html.push("<ul>");
+        inList = true;
+      }
+      html.push(`<li>${renderMarkdownInline(trimmed.replace(/^[-*]\s+/, ""))}</li>`);
+      return;
+    }
+
+    if (/^>\s+/.test(trimmed)) {
+      closeList();
+      html.push(`<blockquote>${renderMarkdownInline(trimmed.replace(/^>\s+/, ""))}</blockquote>`);
+      return;
+    }
+
+    closeList();
+    html.push(`<p>${renderMarkdownInline(trimmed)}</p>`);
+  });
+
+  closeList();
+  return html.join("");
+}
+
+function createExcerpt(value, maxLength = 72) {
+  const text = stripMarkdown(value);
+  if (!text) return "";
+  if (text.length <= maxLength) return text;
+  return `${text.slice(0, maxLength).trim()}...`;
+}
+
+function parseTagList(value) {
+  return String(value || "")
+    .split(/[\n,]/)
+    .map((item) => item.trim())
+    .filter(Boolean)
+    .slice(0, 8);
+}
+
+function parseImageList(value) {
+  return String(value || "")
+    .split(/\n+/)
+    .map((item) => item.trim())
+    .filter(Boolean)
+    .slice(0, 12);
+}
+
+function normalizeWriterDraft(candidate = {}) {
+  return {
+    id: String(candidate.id || "").trim(),
+    title: String(candidate.title || "").trim(),
+    slug: String(candidate.slug || "").trim().toLowerCase(),
+    content: String(candidate.content || ""),
+    summary: String(candidate.summary || "").trim(),
+    cover: String(candidate.cover || "").trim(),
+    tags: parseTagList(Array.isArray(candidate.tags) ? candidate.tags.join(",") : candidate.tags),
+    category: writerCategories.includes(candidate.category) ? candidate.category : writerCategories[0],
+    date: formatDateTimeLocalValue(candidate.date || new Date()),
+    hidden: Boolean(candidate.hidden),
+    images: parseImageList(Array.isArray(candidate.images) ? candidate.images.join("\n") : candidate.images),
+  };
+}
+
+function createEmptyWriterDraft() {
+  return normalizeWriterDraft({ date: formatDateTimeLocalValue(new Date()) });
+}
+
+function normalizeCustomArticle(candidate = {}) {
+  const normalized = normalizeWriterDraft(candidate);
+  return {
+    ...normalized,
+    id: normalized.id || `article-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`,
+    slug: normalized.slug || slugify(normalized.title) || `post-${Date.now().toString(36)}`,
+    summary: normalized.summary || createExcerpt(normalized.content, 88),
+  };
+}
+
+function loadCustomArticles() {
+  try {
+    const stored = window.localStorage.getItem(ARTICLE_STORAGE_KEY);
+    if (!stored) return [];
+    return JSON.parse(stored)
+      .map((article) => normalizeCustomArticle(article))
+      .sort((left, right) => parseDateValue(right.date) - parseDateValue(left.date));
+  } catch {
+    return [];
+  }
+}
+
+function persistCustomArticles(articles) {
+  window.localStorage.setItem(ARTICLE_STORAGE_KEY, JSON.stringify(articles));
+}
+
+function loadWriterDraft() {
+  try {
+    const stored = window.localStorage.getItem(WRITER_DRAFT_STORAGE_KEY);
+    return stored ? normalizeWriterDraft(JSON.parse(stored)) : createEmptyWriterDraft();
+  } catch {
+    return createEmptyWriterDraft();
+  }
+}
+
+function persistWriterDraft(draft) {
+  window.localStorage.setItem(WRITER_DRAFT_STORAGE_KEY, JSON.stringify(draft));
+}
+
+function getPublishedCustomArticles() {
+  return customArticles
+    .filter((article) => !article.hidden)
+    .slice()
+    .sort((left, right) => parseDateValue(right.date) - parseDateValue(left.date));
+}
+
+function getPublishedCustomArticleIds() {
+  return getPublishedCustomArticles().map((article) => article.id);
+}
+
+function buildArticleArchiveData() {
+  const entries = [];
+
+  articleArchive.forEach((yearBlock) => {
+    yearBlock.entries.forEach((entry) => {
+      entries.push({
+        date: entry.date,
+        title: entry.title,
+        tag: entry.tag,
+        year: String(yearBlock.year),
+        timestamp: parseDateValue(`${yearBlock.year}-${entry.date}T00:00`).getTime(),
+        articleId: "",
+        isCustom: false,
+      });
+    });
+  });
+
+  getPublishedCustomArticles().forEach((article) => {
+    const date = parseDateValue(article.date);
+    entries.push({
+      date: formatArchiveDate(date),
+      title: article.title,
+      tag: article.category || article.tags[0] || "Recent",
+      year: String(date.getFullYear()),
+      timestamp: date.getTime(),
+      articleId: article.id,
+      isCustom: true,
+    });
+  });
+
+  const grouped = entries
+    .sort((left, right) => right.timestamp - left.timestamp)
+    .reduce((map, entry) => {
+      if (!map.has(entry.year)) {
+        map.set(entry.year, []);
+      }
+      map.get(entry.year).push(entry);
+      return map;
+    }, new Map());
+
+  return [...grouped.entries()]
+    .sort((left, right) => Number(right[0]) - Number(left[0]))
+    .map(([year, yearEntries]) => ({
+      year,
+      count: yearEntries.length,
+      entries: yearEntries,
+    }));
+}
+
+function getLatestArticleCardData() {
+  const latestCustomArticle = getPublishedCustomArticles()[0];
+  if (!latestCustomArticle) {
+    return siteConfig.latestUpdates[0];
+  }
+
+  return {
+    title: latestCustomArticle.title,
+    excerpt: latestCustomArticle.summary || createExcerpt(latestCustomArticle.content, 54),
+    date: formatSlashDate(latestCustomArticle.date),
+    href: "#/articles",
+    thumb: (latestCustomArticle.slug || "NEW").replace(/-/g, "").slice(0, 4).toUpperCase() || "NEW",
+  };
+}
+
 function renderStars(count) {
   return `
     <div class="rating-row" aria-label="${count} out of 5 stars">
@@ -769,7 +1080,7 @@ function renderCalendar() {
 function renderShell() {
   const greeting = getGreetingByHour(new Date().getHours());
   const heroTitle = `${escapeHtml(greeting)}<br />I'm <span class="accent-name">${escapeHtml(siteConfig.homeBrand)}</span>, nice to meet you!`;
-  const latest = siteConfig.latestUpdates[0];
+  const latest = getLatestArticleCardData();
 
   els.brandName.textContent = siteConfig.homeBrand;
   els.brandRole.textContent = siteConfig.role;
@@ -990,21 +1301,121 @@ function renderLayoutEditor() {
     .join("");
 }
 
+function finishLayoutDrag() {
+  if (!layoutDragSession) return;
+
+  const { element } = layoutDragSession;
+  element.classList.remove("is-layout-dragging");
+  layoutDragSession = null;
+}
+
+function beginLayoutDrag(event) {
+  if (!isLayoutDragMode || state.route !== "home" || !draftUiSettings) return;
+  if (event.button !== 0) return;
+  if (!(event.target instanceof Element)) return;
+
+  const target = event.target.closest("[data-layout-item]");
+  if (!(target instanceof HTMLElement) || !els.homeSnapshot?.contains(target) || target.hidden) return;
+
+  const itemId = target.dataset.layoutItem;
+  const item = draftUiSettings.layout.items[itemId];
+  if (!item || !item.enabled) return;
+
+  finishLayoutDrag();
+  layoutDragSession = {
+    itemId,
+    element: target,
+    startX: event.clientX,
+    startY: event.clientY,
+    originX: item.offsetX,
+    originY: item.offsetY,
+  };
+
+  target.classList.add("is-layout-dragging");
+  event.preventDefault();
+}
+
+function handleLayoutDragMove(event) {
+  if (!layoutDragSession || !draftUiSettings) return;
+
+  const deltaX = Math.round(event.clientX - layoutDragSession.startX);
+  const deltaY = Math.round(event.clientY - layoutDragSession.startY);
+  const item = draftUiSettings.layout.items[layoutDragSession.itemId];
+  if (!item) return;
+
+  const nextX = Math.max(-180, Math.min(180, layoutDragSession.originX + deltaX));
+  const nextY = Math.max(-180, Math.min(180, layoutDragSession.originY + deltaY));
+
+  item.offsetX = nextX;
+  item.offsetY = nextY;
+  layoutDragSession.element.style.transform = `translate(${nextX}px, ${nextY}px)`;
+}
+
+function resetLayoutOffsets() {
+  if (!draftUiSettings) return;
+
+  homeLayoutItems.forEach(({ id }) => {
+    draftUiSettings.layout.items[id].offsetX = 0;
+    draftUiSettings.layout.items[id].offsetY = 0;
+  });
+
+  draftUiSettings = applyUiSettings(draftUiSettings);
+  if (!els.settingsPanel?.hidden) {
+    renderLayoutEditor();
+  }
+}
+
+function openSettingsPanel({ reuseDraft = false, tab = "site" } = {}) {
+  if (!reuseDraft || !draftUiSettings) {
+    draftUiSettings = cloneData(savedUiSettings);
+  }
+  activeSettingsTab = tab;
+  renderSettingsPanel();
+  els.settingsPanel.hidden = false;
+  document.body.classList.add("settings-open");
+  syncSettingsToggleState();
+}
+
+function enterLayoutDragMode() {
+  if (!draftUiSettings) {
+    draftUiSettings = cloneData(savedUiSettings);
+  }
+
+  draftUiSettings = applyUiSettings(draftUiSettings);
+  finishLayoutDrag();
+  clearNavCardPreview();
+  closeSettingsPanel({ restoreSaved: false });
+  isLayoutDragMode = true;
+  document.body.classList.add("drag-layout-mode");
+  syncSettingsToggleState();
+}
+
+function exitLayoutDragMode({ reopenSettings = false, restoreSaved = false } = {}) {
+  finishLayoutDrag();
+  isLayoutDragMode = false;
+  document.body.classList.remove("drag-layout-mode");
+
+  if (restoreSaved && savedUiSettings) {
+    draftUiSettings = cloneData(savedUiSettings);
+    applyUiSettings(savedUiSettings);
+  } else if (draftUiSettings) {
+    draftUiSettings = applyUiSettings(draftUiSettings);
+  }
+
+  if (reopenSettings) {
+    openSettingsPanel({ reuseDraft: true, tab: "layout" });
+    return;
+  }
+
+  syncSettingsToggleState();
+}
+
 function renderSettingsPanel() {
   syncStaticSettingsInputs();
   renderThemeFields();
   renderThemePresets();
   renderLayoutEditor();
   setActiveSettingsTab(activeSettingsTab);
-}
-
-function openSettingsPanel() {
-  draftUiSettings = cloneData(savedUiSettings);
-  activeSettingsTab = "site";
-  renderSettingsPanel();
-  els.settingsPanel.hidden = false;
-  els.settingsToggle?.setAttribute("aria-expanded", "true");
-  document.body.classList.add("settings-open");
 }
 
 function closeSettingsPanel({ restoreSaved = true } = {}) {
@@ -1015,8 +1426,22 @@ function closeSettingsPanel({ restoreSaved = true } = {}) {
   if (els.settingsPanel) {
     els.settingsPanel.hidden = true;
   }
-  els.settingsToggle?.setAttribute("aria-expanded", "false");
   document.body.classList.remove("settings-open");
+  syncSettingsToggleState();
+}
+
+function syncSettingsToggleState() {
+  if (!els.settingsToggle) return;
+
+  const isPanelOpen = Boolean(els.settingsPanel && !els.settingsPanel.hidden);
+  const isDragExit = isLayoutDragMode;
+  const label = isDragExit ? "结束拖拽并返回布局设置" : "打开网站设置";
+  const title = isDragExit ? "结束拖拽" : "网站设置";
+
+  els.settingsToggle.setAttribute("aria-expanded", isPanelOpen ? "true" : "false");
+  els.settingsToggle.setAttribute("aria-label", label);
+  els.settingsToggle.setAttribute("title", title);
+  els.settingsToggle.dataset.mode = isDragExit ? "drag-exit" : "settings";
 }
 
 function updateDraftSetting(field, rawValue, inputType = "text") {
@@ -1033,8 +1458,186 @@ function updateDraftSetting(field, rawValue, inputType = "text") {
   draftUiSettings = normalizeUiSettings(draftUiSettings);
 }
 
+function updateWriterStatus(message = "", tone = "success") {
+  if (!els.writerStatus) return;
+
+  if (!message) {
+    els.writerStatus.hidden = true;
+    els.writerStatus.textContent = "";
+    els.writerStatus.removeAttribute("data-tone");
+    return;
+  }
+
+  els.writerStatus.hidden = false;
+  els.writerStatus.dataset.tone = tone;
+  els.writerStatus.textContent = message;
+}
+
+function renderWriterComposer({ syncFields = true } = {}) {
+  if (!writerDraft) return;
+
+  if (syncFields) {
+    if (els.writerTitle) els.writerTitle.value = writerDraft.title;
+    if (els.writerSlug) els.writerSlug.value = writerDraft.slug;
+    if (els.writerContent) els.writerContent.value = writerDraft.content;
+    if (els.writerSummary) els.writerSummary.value = writerDraft.summary;
+    if (els.writerTags) els.writerTags.value = writerDraft.tags.join(", ");
+    if (els.writerCategory) els.writerCategory.value = writerDraft.category;
+    if (els.writerDate) els.writerDate.value = writerDraft.date;
+    if (els.writerHidden) els.writerHidden.checked = writerDraft.hidden;
+    if (els.writerCover) els.writerCover.value = writerDraft.cover;
+    if (els.writerImages) els.writerImages.value = writerDraft.images.join("\n");
+  }
+
+  if (els.writerCoverPreview) {
+    const hasCover = Boolean(writerDraft.cover);
+    els.writerCoverPreview.classList.toggle("has-image", hasCover);
+    els.writerCoverPreview.style.backgroundImage = hasCover ? `url("${writerDraft.cover}")` : "none";
+    els.writerCoverPreview.innerHTML = hasCover ? "" : "<span>+</span>";
+  }
+
+  if (els.writerContent) {
+    els.writerContent.hidden = state.writerPreview;
+  }
+
+  if (els.writerPreview) {
+    els.writerPreview.hidden = !state.writerPreview;
+  }
+
+  if (els.writerPreviewToggle) {
+    els.writerPreviewToggle.textContent = state.writerPreview ? "返回编辑" : "预览";
+  }
+
+  if (els.writerPreviewTitle) {
+    els.writerPreviewTitle.textContent = writerDraft.title || "未命名文章";
+  }
+
+  if (els.writerPreviewMeta) {
+    const metaParts = [formatSlashDate(writerDraft.date), writerDraft.category];
+    if (writerDraft.tags.length) {
+      metaParts.push(writerDraft.tags.join(" · "));
+    }
+    els.writerPreviewMeta.textContent = metaParts.join(" / ");
+  }
+
+  if (els.writerPreviewSummary) {
+    els.writerPreviewSummary.textContent =
+      writerDraft.summary || createExcerpt(writerDraft.content, 120) || "这篇文章还没有摘要。";
+  }
+
+  if (els.writerPreviewCover) {
+    const hasPreviewCover = Boolean(writerDraft.cover);
+    els.writerPreviewCover.hidden = !hasPreviewCover;
+    els.writerPreviewCover.style.backgroundImage = hasPreviewCover ? `url("${writerDraft.cover}")` : "none";
+  }
+
+  if (els.writerPreviewContent) {
+    const gallery =
+      writerDraft.images.length > 0
+        ? `
+          <div class="writer-preview-gallery">
+            ${writerDraft.images
+              .map(
+                (image) => `
+                  <div class="writer-preview-gallery__item">
+                    <img src="${escapeHtml(image)}" alt="" loading="lazy" />
+                  </div>
+                `,
+              )
+              .join("")}
+          </div>
+        `
+        : "";
+
+    els.writerPreviewContent.innerHTML =
+      gallery +
+      markdownToHtml(writerDraft.content || "还没有正文内容，先在左侧写点东西吧。");
+  }
+}
+
+function updateWriterDraftField(field, rawValue, inputType = "text") {
+  if (!writerDraft) return;
+
+  const shouldSyncSlug = field === "title" && !String(writerDraft.slug || "").trim();
+  const value = inputType === "checkbox" ? Boolean(rawValue) : rawValue;
+
+  writerDraft = normalizeWriterDraft({
+    ...writerDraft,
+    [field]: value,
+    ...(shouldSyncSlug ? { slug: slugify(String(rawValue || "")) } : {}),
+  });
+
+  persistWriterDraft(writerDraft);
+  updateWriterStatus("");
+  renderWriterComposer({ syncFields: false });
+
+  if (shouldSyncSlug && els.writerSlug) {
+    els.writerSlug.value = writerDraft.slug;
+  }
+}
+
+function importMarkdownIntoWriter(markdownText) {
+  const content = String(markdownText || "");
+  const headingMatch = content.match(/^#\s+(.+)$/m);
+  const importedTitle = headingMatch?.[1]?.trim() || "";
+
+  writerDraft = normalizeWriterDraft({
+    ...writerDraft,
+    title: writerDraft.title || importedTitle,
+    slug: writerDraft.slug || slugify(importedTitle),
+    content,
+    summary: writerDraft.summary || createExcerpt(content, 120),
+  });
+
+  persistWriterDraft(writerDraft);
+  renderWriterComposer();
+  updateWriterStatus("Markdown 已导入，可以继续整理后再发布。", "success");
+}
+
+async function handleWriterFileImport(file) {
+  if (!file) return;
+
+  const content = await file.text();
+  importMarkdownIntoWriter(content);
+}
+
+function publishWriterArticle() {
+  if (!writerDraft?.title.trim()) {
+    updateWriterStatus("先写一个标题，再发布到近期文章。", "error");
+    return;
+  }
+
+  if (!writerDraft.content.trim()) {
+    updateWriterStatus("正文还是空的，先补一点内容吧。", "error");
+    return;
+  }
+
+  const article = normalizeCustomArticle({
+    ...writerDraft,
+    slug: writerDraft.slug || slugify(writerDraft.title),
+  });
+
+  customArticles = customArticles.filter((item) => item.id !== article.id);
+  customArticles.unshift(article);
+  customArticles.sort((left, right) => parseDateValue(right.date) - parseDateValue(left.date));
+  persistCustomArticles(customArticles);
+
+  renderShell();
+  renderArticles();
+
+  state.writerPreview = false;
+  writerDraft = createEmptyWriterDraft();
+  persistWriterDraft(writerDraft);
+  renderWriterComposer();
+
+  updateWriterStatus(
+    article.hidden ? "文章已保存为隐藏稿件，暂时不会出现在近期文章里。" : "文章已发布到近期文章，首页和文章归档都已刷新。",
+    "success",
+  );
+}
+
 function renderArticles() {
-  els.articleArchive.innerHTML = articleArchive
+  els.articleArchive.innerHTML = buildArticleArchiveData()
     .map(
       (yearBlock) => `
         <article class="panel archive-year-card">
@@ -1054,6 +1657,205 @@ function renderArticles() {
                   </article>
                 `,
               )
+              .join("")}
+          </div>
+        </article>
+      `,
+    )
+    .join("");
+}
+
+function syncArticleManageState() {
+  const validIds = new Set(getPublishedCustomArticleIds());
+  selectedArticleIds = new Set([...selectedArticleIds].filter((articleId) => validIds.has(articleId)));
+
+  if (!validIds.size) {
+    articleManageMode = false;
+  }
+}
+
+function renderArticleManageBar() {
+  syncArticleManageState();
+  if (els.articleManageBar) {
+    els.articleManageBar.hidden = true;
+  }
+  updateTopActionButton();
+}
+
+function updateTopActionButton() {
+  if (!els.copyEmail) return;
+
+  const isArticleRoute = state.route === "articles";
+  const totalCustomArticles = getPublishedCustomArticleIds().length;
+  const selectedCount = selectedArticleIds.size;
+  const isManageDanger = isArticleRoute && articleManageMode && selectedCount > 0;
+  const isManageActive = isArticleRoute && articleManageMode && selectedCount === 0;
+
+  els.copyEmail.classList.toggle("is-manage-active", isManageActive);
+  els.copyEmail.classList.toggle("is-manage-danger", isManageDanger);
+  els.copyEmail.disabled = false;
+
+  if (!isArticleRoute) {
+    els.copyEmail.textContent = "复制邮箱";
+    els.copyEmail.setAttribute("aria-label", "复制邮箱");
+    els.copyEmail.setAttribute("title", "复制邮箱");
+    return;
+  }
+
+  if (!totalCustomArticles) {
+    els.copyEmail.textContent = "文章管理";
+    els.copyEmail.disabled = true;
+    els.copyEmail.setAttribute("aria-label", "暂无可管理文章");
+    els.copyEmail.setAttribute("title", "暂无可管理文章");
+    return;
+  }
+
+  if (isManageDanger) {
+    els.copyEmail.textContent = `删除选中 (${selectedCount})`;
+    els.copyEmail.setAttribute("aria-label", `删除选中的 ${selectedCount} 篇文章`);
+    els.copyEmail.setAttribute("title", `删除选中的 ${selectedCount} 篇文章`);
+    return;
+  }
+
+  if (isManageActive) {
+    els.copyEmail.textContent = "完成管理";
+    els.copyEmail.setAttribute("aria-label", "退出文章管理");
+    els.copyEmail.setAttribute("title", "退出文章管理");
+    return;
+  }
+
+  els.copyEmail.textContent = "文章管理";
+  els.copyEmail.setAttribute("aria-label", "进入文章管理");
+  els.copyEmail.setAttribute("title", "进入文章管理");
+}
+
+function handleTopActionButtonClick() {
+  if (state.route !== "articles") {
+    copyEmail();
+    return;
+  }
+
+  if (!getPublishedCustomArticleIds().length) return;
+
+  if (articleManageMode && selectedArticleIds.size > 0) {
+    deleteCustomArticles([...selectedArticleIds]);
+    return;
+  }
+
+  if (articleManageMode) {
+    exitArticleManageMode();
+    return;
+  }
+
+  enterArticleManageMode();
+}
+
+function enterArticleManageMode() {
+  if (!getPublishedCustomArticleIds().length) return;
+  articleManageMode = true;
+  renderArticles();
+}
+
+function exitArticleManageMode() {
+  articleManageMode = false;
+  selectedArticleIds = new Set();
+  renderArticles();
+}
+
+function toggleAllArticleSelections() {
+  const ids = getPublishedCustomArticleIds();
+  if (!ids.length) return;
+
+  const shouldClear = ids.every((articleId) => selectedArticleIds.has(articleId));
+  selectedArticleIds = shouldClear ? new Set() : new Set(ids);
+  renderArticles();
+}
+
+function toggleArticleSelection(articleId, isSelected) {
+  const validIds = new Set(getPublishedCustomArticleIds());
+  if (!validIds.has(articleId)) return;
+
+  if (isSelected) {
+    selectedArticleIds.add(articleId);
+  } else {
+    selectedArticleIds.delete(articleId);
+  }
+
+  renderArticleManageBar();
+}
+
+function deleteCustomArticles(articleIds) {
+  const publishedIds = new Set(getPublishedCustomArticleIds());
+  const idsToDelete = [...new Set(articleIds)].filter((articleId) => publishedIds.has(articleId));
+  if (!idsToDelete.length) return;
+
+  const message =
+    idsToDelete.length === 1
+      ? "删除这篇近期文章后将无法恢复，继续吗？"
+      : `确定删除选中的 ${idsToDelete.length} 篇近期文章吗？此操作无法恢复。`;
+
+  if (!window.confirm(message)) return;
+
+  const idSet = new Set(idsToDelete);
+  customArticles = customArticles.filter((article) => !idSet.has(article.id));
+  persistCustomArticles(customArticles);
+
+  selectedArticleIds = new Set([...selectedArticleIds].filter((articleId) => !idSet.has(articleId)));
+  if (!getPublishedCustomArticleIds().length) {
+    articleManageMode = false;
+  }
+
+  renderShell();
+  renderArticles();
+}
+
+function renderArticles() {
+  syncArticleManageState();
+  renderArticleManageBar();
+
+  els.articleArchive.innerHTML = buildArticleArchiveData()
+    .map(
+      (yearBlock) => `
+        <article class="panel archive-year-card">
+          <div class="archive-year-card__header">
+            <h3>${escapeHtml(yearBlock.year)}年</h3>
+            <p>${escapeHtml(String(yearBlock.count))} 篇文章</p>
+          </div>
+          <div class="archive-entry-list">
+            ${yearBlock.entries
+              .map((entry) => {
+                const isSelected = entry.isCustom && selectedArticleIds.has(entry.articleId);
+                const selectControl = articleManageMode
+                  ? entry.isCustom
+                    ? `
+                        <label class="archive-entry__select">
+                          <input
+                            class="archive-entry__checkbox"
+                            type="checkbox"
+                            data-article-select="${escapeHtml(entry.articleId)}"
+                            aria-label="选择文章 ${escapeHtml(entry.title)}"
+                            ${isSelected ? "checked" : ""}
+                          />
+                        </label>
+                      `
+                    : `<span class="archive-entry__select-spacer" aria-hidden="true"></span>`
+                  : "";
+                const deleteButton =
+                  articleManageMode && entry.isCustom
+                    ? `<button class="archive-entry__delete" type="button" data-article-delete="${escapeHtml(entry.articleId)}">删除</button>`
+                    : "";
+
+                return `
+                  <article class="archive-entry${articleManageMode ? " archive-entry--manage" : ""}">
+                    ${selectControl}
+                    <span class="archive-entry__date">${escapeHtml(entry.date)}</span>
+                    <span class="archive-entry__dot" aria-hidden="true"></span>
+                    <span class="archive-entry__title">${escapeHtml(entry.title)}</span>
+                    <span class="archive-entry__tag">#${escapeHtml(entry.tag)}</span>
+                    ${deleteButton}
+                  </article>
+                `;
+              })
               .join("")}
           </div>
         </article>
@@ -1343,6 +2145,18 @@ function updateRouteUi() {
   document.body.setAttribute("data-route", state.route);
   els.siteNav.classList.remove("open");
   els.menuToggle.setAttribute("aria-expanded", "false");
+  if (state.route === "articles") {
+    renderArticleManageBar();
+  } else {
+    const shouldResetArticleManage = articleManageMode || selectedArticleIds.size > 0;
+    articleManageMode = false;
+    selectedArticleIds = new Set();
+    if (shouldResetArticleManage) {
+      renderArticles();
+    } else {
+      updateTopActionButton();
+    }
+  }
   queueNavCardIndicatorUpdate();
 }
 
@@ -1370,6 +2184,10 @@ function syncHistory(route, replace = false) {
 
 async function transitionToRoute(nextRoute, { replace = false, syncLocation = false } = {}) {
   if (!allowedRoutes.has(nextRoute)) return;
+
+  if (isLayoutDragMode && nextRoute !== "home") {
+    exitLayoutDragMode({ reopenSettings: false });
+  }
 
   if (syncLocation) {
     syncHistory(nextRoute, replace);
@@ -1565,8 +2383,91 @@ function bindEvents() {
     els.menuToggle.setAttribute("aria-expanded", String(expanded));
   });
 
-  els.copyEmail.addEventListener("click", copyEmail);
+  els.copyEmail.addEventListener("click", handleTopActionButtonClick);
+  els.articleManageToggle?.addEventListener("click", () => {
+    enterArticleManageMode();
+  });
+  els.articleSelectAll?.addEventListener("click", () => {
+    toggleAllArticleSelections();
+  });
+  els.articleManageCancel?.addEventListener("click", () => {
+    exitArticleManageMode();
+  });
+  els.articleDeleteSelected?.addEventListener("click", () => {
+    deleteCustomArticles([...selectedArticleIds]);
+  });
+  els.articleArchive?.addEventListener("change", (event) => {
+    const target = event.target;
+    if (!(target instanceof HTMLInputElement)) return;
+
+    const articleId = target.dataset.articleSelect;
+    if (!articleId) return;
+
+    toggleArticleSelection(articleId, target.checked);
+  });
+  els.articleArchive?.addEventListener("click", (event) => {
+    if (!(event.target instanceof Element)) return;
+
+    const deleteTarget = event.target.closest("[data-article-delete]");
+    if (!deleteTarget) return;
+
+    deleteCustomArticles([deleteTarget.dataset.articleDelete]);
+  });
+  els.writerImportMd?.addEventListener("click", () => {
+    els.writerFileInput?.click();
+  });
+  els.writerPreviewToggle?.addEventListener("click", () => {
+    state.writerPreview = !state.writerPreview;
+    renderWriterComposer();
+  });
+  els.writerPublish?.addEventListener("click", () => {
+    publishWriterArticle();
+  });
+  els.writerFileInput?.addEventListener("change", async (event) => {
+    const target = event.target;
+    if (!(target instanceof HTMLInputElement)) return;
+
+    const file = target.files?.[0];
+    if (!file) return;
+
+    await handleWriterFileImport(file);
+    target.value = "";
+  });
+  els.writerTitle?.addEventListener("input", (event) => {
+    updateWriterDraftField("title", event.target.value);
+  });
+  els.writerSlug?.addEventListener("input", (event) => {
+    updateWriterDraftField("slug", event.target.value);
+  });
+  els.writerContent?.addEventListener("input", (event) => {
+    updateWriterDraftField("content", event.target.value);
+  });
+  els.writerSummary?.addEventListener("input", (event) => {
+    updateWriterDraftField("summary", event.target.value);
+  });
+  els.writerTags?.addEventListener("input", (event) => {
+    updateWriterDraftField("tags", event.target.value);
+  });
+  els.writerCategory?.addEventListener("change", (event) => {
+    updateWriterDraftField("category", event.target.value);
+  });
+  els.writerDate?.addEventListener("change", (event) => {
+    updateWriterDraftField("date", event.target.value);
+  });
+  els.writerHidden?.addEventListener("change", (event) => {
+    updateWriterDraftField("hidden", event.target.checked, "checkbox");
+  });
+  els.writerCover?.addEventListener("input", (event) => {
+    updateWriterDraftField("cover", event.target.value);
+  });
+  els.writerImages?.addEventListener("input", (event) => {
+    updateWriterDraftField("images", event.target.value);
+  });
   els.settingsToggle?.addEventListener("click", () => {
+    if (isLayoutDragMode) {
+      exitLayoutDragMode({ reopenSettings: true });
+      return;
+    }
     if (els.settingsPanel?.hidden) {
       openSettingsPanel();
       return;
@@ -1599,6 +2500,9 @@ function bindEvents() {
     draftUiSettings.layout = cloneData(defaultUiSettings.layout);
     syncStaticSettingsInputs();
     renderLayoutEditor();
+  });
+  els.settingsEnterDrag?.addEventListener("click", () => {
+    enterLayoutDragMode();
   });
 
   els.settingsPanel?.addEventListener("click", (event) => {
@@ -1647,8 +2551,18 @@ function bindEvents() {
 
   els.settingsPanel?.addEventListener("input", (event) => handleSettingsFieldEvent(event, false));
   els.settingsPanel?.addEventListener("change", (event) => handleSettingsFieldEvent(event, true));
+  els.homeSnapshot?.addEventListener("pointerdown", beginLayoutDrag);
+  window.addEventListener("pointermove", handleLayoutDragMove);
+  window.addEventListener("pointerup", finishLayoutDrag);
+  window.addEventListener("pointercancel", finishLayoutDrag);
+  window.addEventListener("blur", finishLayoutDrag);
 
   document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && isLayoutDragMode) {
+      event.preventDefault();
+      exitLayoutDragMode({ reopenSettings: true });
+      return;
+    }
     if (event.key === "Escape" && !els.settingsPanel?.hidden) {
       closeSettingsPanel();
     }
@@ -1674,6 +2588,9 @@ function bindEvents() {
     if (!route) return;
 
     event.preventDefault();
+    if (isLayoutDragMode && route !== "home") {
+      exitLayoutDragMode({ reopenSettings: false });
+    }
     if (els.navCardLinks?.contains(routeTarget)) {
       setNavCardPreview(routeTarget);
     }
@@ -1689,6 +2606,8 @@ function init() {
   state.route = getRouteFromHash();
   savedUiSettings = loadSavedUiSettings();
   draftUiSettings = cloneData(savedUiSettings);
+  customArticles = loadCustomArticles();
+  writerDraft = loadWriterDraft();
 
   applyUiSettings(savedUiSettings);
   renderArticles();
@@ -1699,6 +2618,7 @@ function init() {
   renderBlogFilters();
   renderBlogLinks();
   renderTimeline();
+  renderWriterComposer();
   updateRouteUi();
   renderSettingsPanel();
   bindEvents();

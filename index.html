@@ -134,7 +134,7 @@
 
             <div class="home-column home-column--right" data-home-column="right">
               <div class="home-tools-row">
-                <a class="home-card action-card" href="#/articles">
+                <a class="home-card action-card" href="#/write">
                   <span class="action-card__icon" aria-hidden="true">&#9998;</span>
                   <span>写文章</span>
                 </a>
@@ -189,7 +189,7 @@
         </section>
 
         <section class="route-section route-section--view" data-route="articles">
-          <div class="view-toolbar view-toolbar--center">
+          <div class="view-toolbar view-toolbar--articles">
             <div class="view-switch" aria-label="文章视图">
               <button class="view-switch__item" type="button">日</button>
               <button class="view-switch__item" type="button">周</button>
@@ -198,7 +198,109 @@
               <button class="view-switch__item" type="button">分类</button>
             </div>
           </div>
+          <div class="article-manage-bar" id="article-manage-bar">
+            <p class="article-manage-bar__hint" id="article-manage-hint">可管理你发布到近期文章里的自定义内容。</p>
+            <div class="article-manage-bar__actions">
+              <button class="secondary-button article-manage-button" id="article-manage-toggle" type="button">管理文章</button>
+              <button class="secondary-button article-manage-button" id="article-select-all" type="button" hidden>全选</button>
+              <button class="ghost-button article-manage-button" id="article-manage-cancel" type="button" hidden>取消</button>
+              <button class="primary-button article-manage-button" id="article-delete-selected" type="button" hidden>删除选中</button>
+            </div>
+          </div>
           <div class="archive-year-list" id="article-archive"></div>
+        </section>
+
+        <section class="route-section route-section--write" data-route="write">
+          <div class="writer-shell">
+            <div class="writer-shell__top">
+              <a class="writer-shell__brand" href="#/home" aria-label="Back home">
+                <span class="brand-mark brand-mark--avatar"></span>
+              </a>
+              <div class="writer-shell__actions">
+                <button class="secondary-button" id="writer-import-md" type="button">Import MD</button>
+                <button class="secondary-button" id="writer-preview-toggle" type="button">Preview</button>
+                <button class="primary-button" id="writer-publish" type="button">Publish</button>
+              </div>
+            </div>
+
+            <div class="writer-status" id="writer-status" hidden></div>
+
+            <div class="writer-editor">
+              <article class="panel writer-editor__main">
+                <div class="writer-form-row">
+                  <input class="writer-input writer-input--title" id="writer-title" type="text" placeholder="Title" maxlength="80" />
+                  <input class="writer-input" id="writer-slug" type="text" placeholder="slug (xx-xx)" maxlength="64" />
+                </div>
+
+                <textarea
+                  class="writer-textarea writer-textarea--content"
+                  id="writer-content"
+                  placeholder="Markdown content"
+                ></textarea>
+
+                <article class="writer-preview-card" id="writer-preview" hidden>
+                  <div class="writer-preview-card__cover" id="writer-preview-cover" hidden></div>
+                  <p class="mini-label writer-preview-card__meta" id="writer-preview-meta"></p>
+                  <h1 class="writer-preview-card__title" id="writer-preview-title">Untitled Post</h1>
+                  <p class="writer-preview-card__summary" id="writer-preview-summary"></p>
+                  <div class="writer-preview-card__content" id="writer-preview-content"></div>
+                </article>
+              </article>
+
+              <div class="writer-editor__side">
+                <article class="panel writer-side-card">
+                  <div class="writer-side-card__head">
+                    <span class="mini-label">Cover</span>
+                  </div>
+                  <div class="writer-cover" id="writer-cover-preview">
+                    <span>+</span>
+                  </div>
+                  <input class="writer-input" id="writer-cover" type="url" placeholder="Cover URL (optional)" />
+                </article>
+
+                <article class="panel writer-side-card">
+                  <div class="writer-side-card__head">
+                    <span class="mini-label">Meta</span>
+                  </div>
+                  <textarea
+                    class="writer-textarea writer-textarea--summary"
+                    id="writer-summary"
+                    placeholder="Write a short summary"
+                  ></textarea>
+                  <input class="writer-input" id="writer-tags" type="text" placeholder="Tags, separated by commas" />
+                  <select class="writer-select" id="writer-category">
+                    <option value="Uncategorized">Uncategorized</option>
+                    <option value="Tech">Tech</option>
+                    <option value="Agent">Agent</option>
+                    <option value="Tools">Tools</option>
+                    <option value="Update">Update</option>
+                    <option value="Study">Study</option>
+                    <option value="Design">Design</option>
+                    <option value="Share">Share</option>
+                    <option value="Notes">Notes</option>
+                  </select>
+                  <input class="writer-input" id="writer-date" type="datetime-local" />
+                  <label class="writer-check">
+                    <input id="writer-hidden" type="checkbox" />
+                    <span>Hide this article in recent feed</span>
+                  </label>
+                </article>
+
+                <article class="panel writer-side-card">
+                  <div class="writer-side-card__head">
+                    <span class="mini-label">Images</span>
+                  </div>
+                  <textarea
+                    class="writer-textarea writer-textarea--images"
+                    id="writer-images"
+                    placeholder="One image URL per line"
+                  ></textarea>
+                </article>
+              </div>
+            </div>
+
+            <input id="writer-file-input" type="file" accept=".md,.markdown,text/markdown,text/plain" hidden />
+          </div>
         </section>
 
         <section class="route-section route-section--view" data-route="projects">
@@ -399,9 +501,14 @@
                     <h3>首页网格</h3>
                     <p>先调整三列宽度和间距，再细调每个模块。</p>
                   </div>
-                  <button class="secondary-button settings-inline-button" id="settings-reset-layout" type="button">
-                    重置布局
-                  </button>
+                  <div class="settings-section__actions">
+                    <button class="secondary-button settings-inline-button" id="settings-reset-layout" type="button">
+                      重置布局
+                    </button>
+                    <button class="primary-button settings-inline-button" id="settings-enter-drag" type="button">
+                      进入主页拖拽布局
+                    </button>
+                  </div>
                 </div>
                 <div class="settings-grid-controls">
                   <label class="settings-field">
@@ -448,6 +555,7 @@
           </div>
         </section>
       </div>
+
     </div>
   </body>
 </html>
