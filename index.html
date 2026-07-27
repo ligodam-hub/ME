@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ME | Portfolio & Navigation Hub</title>
+    <meta
+      name="description"
+      content="A portfolio-first navigation hub with room for a future knowledge base."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./styles.css" />
+    <script defer src="./app.js"></script>
+  </head>
+  <body>
+    <div class="ambient ambient-left"></div>
+    <div class="ambient ambient-right"></div>
+    <div class="page-shell">
+      <header class="topbar">
+        <a class="brand" href="#/home" aria-label="Go to home">
+          <span class="brand-mark">ME</span>
+          <span class="brand-copy">
+            <strong id="brand-name">ME</strong>
+            <small id="brand-role">Portfolio & Navigation Hub</small>
+          </span>
+        </a>
+
+        <button
+          class="menu-toggle"
+          id="menu-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="site-nav"
+        >
+          Menu
+        </button>
+
+        <nav class="site-nav" id="site-nav" aria-label="Primary">
+          <a data-route-link href="#/home">Home</a>
+          <a data-route-link href="#/projects">Projects</a>
+          <a data-route-link href="#/explore">Explore</a>
+          <a data-route-link href="#/notes">Notes</a>
+          <a data-route-link href="#/about">About</a>
+        </nav>
+
+        <button class="ghost-button" id="copy-email" type="button">
+          Copy Email
+        </button>
+      </header>
+
+      <main>
+        <section class="route-section route-active" data-route="home">
+          <div class="hero-grid">
+            <div class="hero-copy">
+              <p class="eyebrow" id="hero-status">Available for internships & collaborations</p>
+              <h1 id="hero-title">Build. Ship. Leave a clear trail.</h1>
+              <p class="hero-description" id="hero-description">
+                A portfolio-first site for showcasing projects, curating useful links,
+                and holding space for a knowledge base that will grow over time.
+              </p>
+              <div class="hero-actions">
+                <a class="primary-button" href="#/projects">View Projects</a>
+                <a class="secondary-button" href="#/explore">Open Navigation Hub</a>
+              </div>
+              <div class="hero-stats" id="stats-grid"></div>
+            </div>
+
+            <aside class="spotlight-card">
+              <div class="spotlight-header">
+                <div>
+                  <p class="mini-label">Spotlight</p>
+                  <h2>Featured build of the day</h2>
+                </div>
+                <button class="icon-button" id="shuffle-spotlight" type="button">
+                  Shuffle
+                </button>
+              </div>
+              <div id="spotlight-panel"></div>
+            </aside>
+          </div>
+
+          <div class="panel-grid home-panels">
+            <article class="panel">
+              <div class="panel-heading">
+                <p class="mini-label">Now Building</p>
+                <h3>Current direction</h3>
+              </div>
+              <p id="current-focus">
+                Shipping a portfolio and navigation station first, then layering in a
+                personal knowledge base once the structure feels right.
+              </p>
+              <a class="inline-link" href="#/notes">See knowledge base plan</a>
+            </article>
+
+            <article class="panel">
+              <div class="panel-heading">
+                <p class="mini-label">Quick Access</p>
+                <h3>Fast routes</h3>
+              </div>
+              <div class="chip-row">
+                <a class="chip-link" href="#/projects">Selected work</a>
+                <a class="chip-link" href="#/explore">Useful links</a>
+                <a class="chip-link" href="#/about">Story & process</a>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="route-section" data-route="projects">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Projects</p>
+              <h2>Portfolio that can be filtered, searched, and scanned quickly</h2>
+            </div>
+            <p class="section-note" id="project-count"></p>
+          </div>
+
+          <div class="toolbar">
+            <div class="chip-row" id="project-filters"></div>
+            <label class="search-field">
+              <span>Search</span>
+              <input
+                id="project-search"
+                type="search"
+                placeholder="Search by title, summary, or tag"
+              />
+            </label>
+          </div>
+
+          <div class="project-grid" id="project-grid"></div>
+          <div class="empty-state hidden" id="project-empty">
+            <h3>No matches yet</h3>
+            <p>Try another keyword or switch back to a broader category.</p>
+          </div>
+        </section>
+
+        <section class="route-section" data-route="explore">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Explore</p>
+              <h2>Navigation hub for everything worth resurfacing</h2>
+            </div>
+            <p class="section-note">
+              Use this page like a curated launchpad instead of a link dump.
+            </p>
+          </div>
+          <div class="panel-grid" id="explore-groups"></div>
+        </section>
+
+        <section class="route-section" data-route="notes">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Notes</p>
+              <h2>Knowledge base placeholder, ready for a cleaner second phase</h2>
+            </div>
+            <p class="section-note">
+              The structure is prepared now so the content can grow without making the
+              site feel unfinished.
+            </p>
+          </div>
+
+          <div class="panel-grid notes-layout">
+            <article class="panel">
+              <div class="panel-heading">
+                <p class="mini-label">Roadmap</p>
+                <h3>How the notes area will evolve</h3>
+              </div>
+              <div class="roadmap-list" id="roadmap-list"></div>
+            </article>
+
+            <article class="panel muted-panel">
+              <div class="panel-heading">
+                <p class="mini-label">Placeholder</p>
+                <h3>Reserved categories</h3>
+              </div>
+              <div class="placeholder-grid" id="note-topics"></div>
+            </article>
+          </div>
+        </section>
+
+        <section class="route-section" data-route="about">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">About</p>
+              <h2>Story, strengths, and the logic behind the site</h2>
+            </div>
+            <p class="section-note">
+              This page explains what the site is trying to become, not just what it
+              looks like today.
+            </p>
+          </div>
+
+          <div class="panel-grid about-layout">
+            <article class="panel">
+              <div class="panel-heading">
+                <p class="mini-label">Timeline</p>
+                <h3>Build milestones</h3>
+              </div>
+              <div class="timeline" id="timeline-list"></div>
+            </article>
+
+            <article class="panel">
+              <div class="panel-heading">
+                <p class="mini-label">Site Logic</p>
+                <h3>Why this version works first</h3>
+              </div>
+              <ul class="bullet-list">
+                <li>Portfolio comes first so the site is useful immediately.</li>
+                <li>Navigation groups prevent good resources from getting buried.</li>
+                <li>Knowledge base is staged with placeholders instead of fake content.</li>
+                <li>Hash routing keeps GitHub Pages deployment simple and reliable.</li>
+              </ul>
+            </article>
+          </div>
+        </section>
+      </main>
+
+      <footer class="footer">
+        <p>
+          <span id="footer-name">ME</span>
+          <span class="footer-dot">/</span>
+          <span>Portfolio-first personal hub</span>
+        </p>
+        <p>&copy; <span id="footer-year"></span></p>
+      </footer>
+    </div>
+  </body>
+</html>
