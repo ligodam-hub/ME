@@ -1212,6 +1212,11 @@ body[data-route="home"] main {
   color: #91a0a7;
   background: rgba(255, 255, 255, 0.5);
   border: 1px solid rgba(103, 124, 130, 0.18);
+  transition:
+    color 180ms ease,
+    background 220ms ease,
+    border-color 220ms ease,
+    box-shadow 220ms ease;
 }
 
 .nav-card__glyph::before {
@@ -1239,6 +1244,7 @@ body[data-route="home"] main {
   content: "\25CE";
 }
 
+.nav-card__links a:hover .nav-card__glyph,
 .nav-card__links a.active .nav-card__glyph {
   color: white;
   border-color: transparent;
@@ -1506,6 +1512,7 @@ main {
   border-color: transparent;
 }
 
+.site-nav a:hover .site-nav__glyph,
 .site-nav a.active .site-nav__glyph {
   color: white;
   border-color: transparent;
