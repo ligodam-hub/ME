@@ -771,6 +771,7 @@ function queueNavCardIndicatorUpdate() {
 function syncNavCardPreviewState() {
   if (!els.navCardLinks) return;
 
+  els.navCardLinks.classList.toggle("is-previewing", Boolean(navCardPreviewLink));
   els.navCardLinks.querySelectorAll("a").forEach((link) => {
     link.classList.toggle("is-preview", link === navCardPreviewLink);
   });

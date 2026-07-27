@@ -1246,7 +1246,7 @@ body[data-route="home"] main {
 
 .nav-card__links a.is-preview .nav-card__glyph,
 .nav-card__links a:hover .nav-card__glyph,
-.nav-card__links a.active .nav-card__glyph {
+.nav-card__links:not(.is-previewing) a.active .nav-card__glyph {
   color: white;
   border-color: transparent;
   background: linear-gradient(135deg, #57d6ca, #39bca8);
