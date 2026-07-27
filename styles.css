@@ -100,6 +100,31 @@ body::before {
   box-shadow: var(--shadow);
 }
 
+.topbar-cluster {
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+  min-width: 0;
+}
+
+body:not([data-route="home"]) .topbar {
+  padding: 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+body:not([data-route="home"]) .topbar-cluster {
+  gap: 0.55rem;
+  padding: 0.36rem 0.5rem 0.36rem 0.42rem;
+  background: rgba(255, 255, 255, 0.62);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: 999px;
+  box-shadow:
+    0 16px 34px rgba(120, 154, 145, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.88);
+}
+
 .brand {
   display: inline-flex;
   align-items: center;
@@ -147,6 +172,14 @@ h3 {
   border-radius: 999px;
 }
 
+body:not([data-route="home"]) .site-nav {
+  gap: 0.45rem;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
 .site-nav a {
   display: inline-flex;
   align-items: center;
@@ -157,6 +190,12 @@ h3 {
   text-decoration: none;
   border-radius: 999px;
   transition: 180ms ease;
+}
+
+body:not([data-route="home"]) .site-nav a {
+  width: 3rem;
+  height: 3rem;
+  padding: 0;
 }
 
 .site-nav a:hover,
@@ -215,6 +254,16 @@ h3 {
 .ghost-button {
   padding: 0.82rem 1rem;
   border-radius: 999px;
+}
+
+body:not([data-route="home"]) .ghost-button {
+  width: auto;
+  padding-inline: 1.45rem;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow:
+    0 12px 28px rgba(120, 154, 145, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.88);
 }
 
 main {
@@ -614,6 +663,10 @@ h1 {
 }
 
 @media (max-width: 960px) {
+  .topbar-cluster {
+    display: contents;
+  }
+
   .hero-grid,
   .home-panels,
   .notes-layout,
