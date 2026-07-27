@@ -369,6 +369,7 @@ const els = {
 };
 
 let navCardPreviewLink = null;
+let navCardIndicatorFrame = 0;
 
 function escapeHtml(value) {
   return String(value)
@@ -765,7 +766,14 @@ function updateNavCardIndicator() {
 }
 
 function queueNavCardIndicatorUpdate() {
-  window.requestAnimationFrame(updateNavCardIndicator);
+  if (navCardIndicatorFrame) {
+    window.cancelAnimationFrame(navCardIndicatorFrame);
+  }
+
+  navCardIndicatorFrame = window.requestAnimationFrame(() => {
+    navCardIndicatorFrame = 0;
+    updateNavCardIndicator();
+  });
 }
 
 function syncNavCardPreviewState() {
@@ -868,7 +876,10 @@ async function transitionToRoute(nextRoute, { replace = false, syncLocation = fa
   }
 
   state.isTransitioning = true;
-  clearNavCardPreview();
+  const preserveNavCardIndicator = state.route === "home" && nextRoute !== "home";
+  if (!preserveNavCardIndicator) {
+    clearNavCardPreview();
+  }
 
   const currentHeight = els.main?.offsetHeight ?? 0;
   if (els.main && currentHeight > 0) {
@@ -890,6 +901,10 @@ async function transitionToRoute(nextRoute, { replace = false, syncLocation = fa
 
   state.route = nextRoute;
   updateRouteUi();
+
+  if (preserveNavCardIndicator) {
+    clearNavCardPreview();
+  }
 
   const nextHeight = nextSection.offsetHeight;
   if (els.main && currentHeight > 0) {
@@ -1051,6 +1066,9 @@ function bindEvents() {
     if (!route) return;
 
     event.preventDefault();
+    if (els.navCardLinks?.contains(routeTarget)) {
+      setNavCardPreview(routeTarget);
+    }
     transitionToRoute(route, { syncLocation: true });
   });
 }
