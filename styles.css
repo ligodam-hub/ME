@@ -704,7 +704,14 @@ body[data-route="home"] .footer {
 }
 
 body[data-route="home"] .page-shell {
-  padding-top: 2rem;
+  min-height: 100vh;
+  padding-top: 1.8rem;
+  padding-bottom: 1.8rem;
+}
+
+body[data-route="home"] main {
+  min-height: calc(100vh - 3.6rem);
+  align-content: center;
 }
 
 .home-snapshot {
@@ -712,7 +719,7 @@ body[data-route="home"] .page-shell {
   grid-template-columns: 280px 420px 320px;
   gap: 1.25rem;
   align-items: start;
-  padding: 0.35rem 0 0.75rem;
+  padding: 0;
 }
 
 .home-column {
@@ -1397,11 +1404,19 @@ body[data-route="home"] .page-shell {
   }
 
   body[data-route="home"] .page-shell {
+    min-height: auto;
     padding-top: 1rem;
+    padding-bottom: 3rem;
+  }
+
+  body[data-route="home"] main {
+    min-height: auto;
+    align-content: start;
   }
 
   .home-snapshot {
     gap: 1rem;
+    padding: 0.35rem 0 0.75rem;
   }
 
   .action-card {
