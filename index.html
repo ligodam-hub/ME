@@ -66,8 +66,19 @@
           </nav>
         </div>
 
-        <button class="ghost-button" id="copy-email" type="button">复制邮箱</button>
+        <div class="topbar-actions">
+          <div class="topbar-action-group" id="gallery-edit-actions" hidden>
+            <button class="secondary-button topbar-inline-button" id="gallery-compress" type="button">压缩工具</button>
+            <button class="secondary-button topbar-inline-button" id="gallery-edit-cancel" type="button">取消</button>
+            <button class="secondary-button topbar-inline-button" id="gallery-upload" type="button">上传</button>
+            <button class="primary-button topbar-inline-button" id="gallery-import-key" type="button">导入密钥</button>
+          </div>
+          <button class="ghost-button" id="gallery-edit-trigger" type="button" hidden>编辑</button>
+          <button class="ghost-button" id="copy-email" type="button">复制邮箱</button>
+        </div>
       </header>
+
+      <div class="site-toast" id="site-toast" role="status" aria-live="polite" hidden></div>
 
       <main>
         <section class="route-section route-active" data-route="home">
@@ -111,7 +122,7 @@
             </div>
 
             <div class="home-column home-column--center" data-home-column="center">
-              <article class="home-card collage-card" aria-hidden="true" data-layout-item="collage">
+              <a class="home-card collage-card collage-card--link" href="#/gallery" data-layout-item="collage" aria-label="打开照片墙">
                 <div class="collage-card__rail"></div>
                 <div class="collage-stack">
                   <div class="collage-note note-a"></div>
@@ -120,7 +131,7 @@
                   <div class="collage-note note-d"></div>
                   <div class="collage-note note-e"></div>
                 </div>
-              </article>
+              </a>
 
               <article class="home-card greeting-card" data-layout-item="greeting">
                 <div class="greeting-card__avatar"></div>
@@ -188,6 +199,18 @@
           </div>
         </section>
 
+        <section class="route-section route-section--gallery" data-route="gallery">
+          <div class="gallery-stage">
+            <div class="gallery-pile" id="gallery-pile"></div>
+            <div class="gallery-empty" id="gallery-empty" hidden>
+              <h3>照片墙还是空的</h3>
+              <p>点右上角“编辑”后可以上传图片，或者导入一组照片墙密钥。</p>
+            </div>
+          </div>
+          <input id="gallery-upload-input" type="file" accept="image/*" multiple hidden />
+          <input id="gallery-compress-input" type="file" accept="image/*" multiple hidden />
+        </section>
+
         <section class="route-section route-section--view" data-route="articles">
           <div class="view-toolbar view-toolbar--articles">
             <div class="view-switch" aria-label="文章视图">
@@ -213,13 +236,13 @@
         <section class="route-section route-section--write" data-route="write">
           <div class="writer-shell">
             <div class="writer-shell__top">
-              <a class="writer-shell__brand" href="#/home" aria-label="Back home">
+              <a class="writer-shell__brand" href="#/home" aria-label="返回首页">
                 <span class="brand-mark brand-mark--avatar"></span>
               </a>
               <div class="writer-shell__actions">
-                <button class="secondary-button" id="writer-import-md" type="button">Import MD</button>
-                <button class="secondary-button" id="writer-preview-toggle" type="button">Preview</button>
-                <button class="primary-button" id="writer-publish" type="button">Publish</button>
+                <button class="secondary-button" id="writer-import-md" type="button">导入 MD</button>
+                <button class="secondary-button" id="writer-preview-toggle" type="button">预览</button>
+                <button class="primary-button" id="writer-publish" type="button">发布文章</button>
               </div>
             </div>
 
@@ -228,20 +251,20 @@
             <div class="writer-editor">
               <article class="panel writer-editor__main">
                 <div class="writer-form-row">
-                  <input class="writer-input writer-input--title" id="writer-title" type="text" placeholder="Title" maxlength="80" />
-                  <input class="writer-input" id="writer-slug" type="text" placeholder="slug (xx-xx)" maxlength="64" />
+                  <input class="writer-input writer-input--title" id="writer-title" type="text" placeholder="标题" maxlength="80" />
+                  <input class="writer-input" id="writer-slug" type="text" placeholder="文章别名（slug）" maxlength="64" />
                 </div>
 
                 <textarea
                   class="writer-textarea writer-textarea--content"
                   id="writer-content"
-                  placeholder="Markdown content"
+                  placeholder="Markdown 正文"
                 ></textarea>
 
                 <article class="writer-preview-card" id="writer-preview" hidden>
                   <div class="writer-preview-card__cover" id="writer-preview-cover" hidden></div>
                   <p class="mini-label writer-preview-card__meta" id="writer-preview-meta"></p>
-                  <h1 class="writer-preview-card__title" id="writer-preview-title">Untitled Post</h1>
+                  <h1 class="writer-preview-card__title" id="writer-preview-title">未命名文章</h1>
                   <p class="writer-preview-card__summary" id="writer-preview-summary"></p>
                   <div class="writer-preview-card__content" id="writer-preview-content"></div>
                 </article>
@@ -250,56 +273,57 @@
               <div class="writer-editor__side">
                 <article class="panel writer-side-card">
                   <div class="writer-side-card__head">
-                    <span class="mini-label">Cover</span>
+                    <span class="mini-label">封面</span>
                   </div>
-                  <div class="writer-cover" id="writer-cover-preview">
-                    <span>+</span>
+                  <div class="writer-cover" id="writer-cover-preview" role="button" tabindex="0" aria-label="上传封面图">
+                    <span>上传封面</span>
                   </div>
-                  <input class="writer-input" id="writer-cover" type="url" placeholder="Cover URL (optional)" />
+                  <input class="writer-input" id="writer-cover" type="url" placeholder="封面图链接（可选）" />
                 </article>
 
                 <article class="panel writer-side-card">
                   <div class="writer-side-card__head">
-                    <span class="mini-label">Meta</span>
+                    <span class="mini-label">文章信息</span>
                   </div>
                   <textarea
                     class="writer-textarea writer-textarea--summary"
                     id="writer-summary"
-                    placeholder="Write a short summary"
+                    placeholder="写一段文章摘要"
                   ></textarea>
-                  <input class="writer-input" id="writer-tags" type="text" placeholder="Tags, separated by commas" />
+                  <input class="writer-input" id="writer-tags" type="text" placeholder="标签，多个用逗号分隔" />
                   <select class="writer-select" id="writer-category">
-                    <option value="Uncategorized">Uncategorized</option>
-                    <option value="Tech">Tech</option>
-                    <option value="Agent">Agent</option>
-                    <option value="Tools">Tools</option>
-                    <option value="Update">Update</option>
-                    <option value="Study">Study</option>
-                    <option value="Design">Design</option>
-                    <option value="Share">Share</option>
-                    <option value="Notes">Notes</option>
+                    <option value="Uncategorized">未分类</option>
+                    <option value="Tech">技术</option>
+                    <option value="Agent">智能体</option>
+                    <option value="Tools">工具</option>
+                    <option value="Update">更新</option>
+                    <option value="Study">学习</option>
+                    <option value="Design">设计</option>
+                    <option value="Share">分享</option>
+                    <option value="Notes">笔记</option>
                   </select>
                   <input class="writer-input" id="writer-date" type="datetime-local" />
                   <label class="writer-check">
                     <input id="writer-hidden" type="checkbox" />
-                    <span>Hide this article in recent feed</span>
+                    <span>不在近期文章中展示</span>
                   </label>
                 </article>
 
                 <article class="panel writer-side-card">
                   <div class="writer-side-card__head">
-                    <span class="mini-label">Images</span>
+                    <span class="mini-label">配图</span>
                   </div>
                   <textarea
                     class="writer-textarea writer-textarea--images"
                     id="writer-images"
-                    placeholder="One image URL per line"
+                    placeholder="每行填写一条图片链接"
                   ></textarea>
                 </article>
               </div>
             </div>
 
             <input id="writer-file-input" type="file" accept=".md,.markdown,text/markdown,text/plain" hidden />
+            <input id="writer-cover-file-input" type="file" accept="image/*" hidden />
           </div>
         </section>
 
@@ -466,6 +490,11 @@
                   <span>站点描述</span>
                   <textarea class="settings-input settings-input--area" data-settings-field="site.description" rows="5"></textarea>
                 </label>
+                <div class="settings-field settings-field--wide">
+                  <span>社交按钮</span>
+                  <div class="settings-social-editor" id="settings-social-list"></div>
+                  <button class="settings-social-add" id="settings-social-add" type="button">+ 添加按钮</button>
+                </div>
               </div>
             </section>
 
