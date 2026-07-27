@@ -57,101 +57,107 @@
       <main>
         <section class="route-section route-active" data-route="home">
           <div class="home-snapshot">
-            <article class="home-card nav-card">
-              <div class="nav-card__profile">
-                <div class="nav-card__avatar"></div>
-                <div>
-                  <strong id="brand-name-home">ME</strong>
-                  <p id="hero-status">开发中</p>
+            <div class="home-column home-column--left">
+              <article class="home-card nav-card">
+                <div class="nav-card__profile">
+                  <div class="nav-card__avatar"></div>
+                  <div>
+                    <strong id="brand-name-home">ME</strong>
+                    <p id="hero-status">开发中</p>
+                  </div>
                 </div>
-              </div>
-              <p class="nav-card__label">GENERAL</p>
-              <nav class="nav-card__links">
-                <span class="nav-card__indicator" id="nav-card-indicator" aria-hidden="true"></span>
-                <a data-route-link href="#/home">
-                  <span class="nav-card__glyph nav-card__glyph--recent" aria-hidden="true"></span>
-                  <span class="nav-card__link-text">近期文章</span>
-                </a>
-                <a data-route-link href="#/projects">
-                  <span class="nav-card__glyph nav-card__glyph--projects" aria-hidden="true"></span>
-                  <span class="nav-card__link-text">我的项目</span>
-                </a>
-                <a data-route-link href="#/about">
-                  <span class="nav-card__glyph nav-card__glyph--about" aria-hidden="true"></span>
-                  <span class="nav-card__link-text">关于网站</span>
-                </a>
-                <a data-route-link href="#/explore">
-                  <span class="nav-card__glyph nav-card__glyph--share" aria-hidden="true"></span>
-                  <span class="nav-card__link-text">推荐分享</span>
-                </a>
-                <a data-route-link href="#/notes">
-                  <span class="nav-card__glyph nav-card__glyph--blogs" aria-hidden="true"></span>
-                  <span class="nav-card__link-text">优秀博客</span>
-                </a>
-              </nav>
-            </article>
+                <p class="nav-card__label">GENERAL</p>
+                <nav class="nav-card__links">
+                  <span class="nav-card__indicator" id="nav-card-indicator" aria-hidden="true"></span>
+                  <a data-route-link href="#/home">
+                    <span class="nav-card__glyph nav-card__glyph--recent" aria-hidden="true"></span>
+                    <span class="nav-card__link-text">近期文章</span>
+                  </a>
+                  <a data-route-link href="#/projects">
+                    <span class="nav-card__glyph nav-card__glyph--projects" aria-hidden="true"></span>
+                    <span class="nav-card__link-text">我的项目</span>
+                  </a>
+                  <a data-route-link href="#/about">
+                    <span class="nav-card__glyph nav-card__glyph--about" aria-hidden="true"></span>
+                    <span class="nav-card__link-text">关于网站</span>
+                  </a>
+                  <a data-route-link href="#/explore">
+                    <span class="nav-card__glyph nav-card__glyph--share" aria-hidden="true"></span>
+                    <span class="nav-card__link-text">推荐分享</span>
+                  </a>
+                  <a data-route-link href="#/notes">
+                    <span class="nav-card__glyph nav-card__glyph--blogs" aria-hidden="true"></span>
+                    <span class="nav-card__link-text">优秀博客</span>
+                  </a>
+                </nav>
+              </article>
 
-            <article class="home-card collage-card" aria-hidden="true">
-              <div class="collage-card__rail"></div>
-              <div class="collage-stack">
-                <div class="collage-note note-a"></div>
-                <div class="collage-note note-b"></div>
-                <div class="collage-note note-c"></div>
-                <div class="collage-note note-d"></div>
-                <div class="collage-note note-e"></div>
-              </div>
-            </article>
+              <article class="home-card latest-card" id="latest-card"></article>
+            </div>
 
-            <a class="home-card action-card" href="#/notes">
-              <span class="action-card__icon" aria-hidden="true">&#9998;</span>
-              <span>写文章</span>
-            </a>
-
-            <article class="home-card greeting-card">
-              <div class="greeting-card__avatar"></div>
-              <p class="eyebrow" id="home-date">2026/7/27 周一</p>
-              <h1 id="hero-title">Good Morning<br />I'm lvy, nice to meet you!</h1>
-              <p class="hero-description" id="hero-description">一个先放作品、再慢慢长成知识库的小站。</p>
-            </article>
-
-            <article class="home-card clock-card">
-              <div class="digital-clock" id="digital-clock">11:25</div>
-            </article>
-
-            <article class="home-card calendar-card">
-              <p class="calendar-title" id="calendar-month">2026/7/27 周一</p>
-              <div class="calendar-week" id="calendar-week"></div>
-              <div class="calendar-days" id="calendar-days"></div>
-            </article>
-
-            <article class="home-card latest-card" id="latest-card"></article>
-
-            <div class="social-row social-row-home" id="social-row"></div>
-
-            <article class="home-card recommend-card">
-              <div class="spotlight-header">
-                <div>
-                  <p class="mini-label">随机推荐</p>
-                  <h2>随手看看</h2>
+            <div class="home-column home-column--center">
+              <article class="home-card collage-card" aria-hidden="true">
+                <div class="collage-card__rail"></div>
+                <div class="collage-stack">
+                  <div class="collage-note note-a"></div>
+                  <div class="collage-note note-b"></div>
+                  <div class="collage-note note-c"></div>
+                  <div class="collage-note note-d"></div>
+                  <div class="collage-note note-e"></div>
                 </div>
-                <button class="icon-button" id="shuffle-spotlight" type="button">换一个</button>
-              </div>
-              <div id="spotlight-panel"></div>
-            </article>
+              </article>
 
-            <article class="home-card music-card">
-              <div class="music-card__meta">
-                <span class="music-card__icon" aria-hidden="true">&#9835;</span>
-                <div>
-                  <strong>Close To You</strong>
-                  <p>small mood module</p>
+              <article class="home-card greeting-card">
+                <div class="greeting-card__avatar"></div>
+                <p class="eyebrow" id="home-date">2026/7/27 周一</p>
+                <h1 id="hero-title">Good Morning<br />I'm lvy, nice to meet you!</h1>
+                <p class="hero-description" id="hero-description">一个先放作品、再慢慢长成知识库的小站。</p>
+              </article>
+
+              <div class="social-row social-row-home" id="social-row"></div>
+
+              <article class="home-card recommend-card">
+                <div class="spotlight-header">
+                  <div>
+                    <p class="mini-label">随机推荐</p>
+                    <h2>随手看看</h2>
+                  </div>
+                  <button class="icon-button" id="shuffle-spotlight" type="button">换一个</button>
                 </div>
-              </div>
-              <div class="music-card__bar">
-                <span></span>
-              </div>
-              <button class="music-card__play" type="button" aria-label="Play">&#9654;</button>
-            </article>
+                <div id="spotlight-panel"></div>
+              </article>
+            </div>
+
+            <div class="home-column home-column--right">
+              <a class="home-card action-card" href="#/notes">
+                <span class="action-card__icon" aria-hidden="true">&#9998;</span>
+                <span>写文章</span>
+              </a>
+
+              <article class="home-card clock-card">
+                <div class="digital-clock" id="digital-clock">11:25</div>
+              </article>
+
+              <article class="home-card calendar-card">
+                <p class="calendar-title" id="calendar-month">2026/7/27 周一</p>
+                <div class="calendar-week" id="calendar-week"></div>
+                <div class="calendar-days" id="calendar-days"></div>
+              </article>
+
+              <article class="home-card music-card">
+                <div class="music-card__meta">
+                  <span class="music-card__icon" aria-hidden="true">&#9835;</span>
+                  <div>
+                    <strong>Close To You</strong>
+                    <p>small mood module</p>
+                  </div>
+                </div>
+                <div class="music-card__bar">
+                  <span></span>
+                </div>
+                <button class="music-card__play" type="button" aria-label="Play">&#9654;</button>
+              </article>
+            </div>
           </div>
         </section>
 
