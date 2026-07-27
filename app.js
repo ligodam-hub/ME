@@ -210,7 +210,6 @@ const state = {
   route: "home",
   category: "All",
   query: "",
-  spotlightIndex: 0,
 };
 
 const categories = ["All", ...new Set(projects.map((project) => project.category))];
@@ -240,7 +239,6 @@ const els = {
   calendarDays: document.getElementById("calendar-days"),
   socialRow: document.getElementById("social-row"),
   latestCard: document.getElementById("latest-card"),
-  spotlightPanel: document.getElementById("spotlight-panel"),
   projectFilters: document.getElementById("project-filters"),
   projectSearch: document.getElementById("project-search"),
   projectGrid: document.getElementById("project-grid"),
@@ -257,7 +255,6 @@ const els = {
   navCardLinks: document.querySelector(".nav-card__links"),
   navCardIndicator: document.getElementById("nav-card-indicator"),
   copyEmail: document.getElementById("copy-email"),
-  shuffleSpotlight: document.getElementById("shuffle-spotlight"),
   routeSections: [...document.querySelectorAll(".route-section")],
   routeLinks: [...document.querySelectorAll("[data-route-link]")],
 };
@@ -269,10 +266,6 @@ function escapeHtml(value) {
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#39;");
-}
-
-function getFeaturedProjects() {
-  return projects.filter((project) => project.featured);
 }
 
 function getRouteFromHash() {
@@ -378,26 +371,6 @@ function renderShell() {
   els.quoteText.textContent = siteConfig.quote;
 
   renderCalendar();
-}
-
-function renderSpotlight() {
-  const featured = getFeaturedProjects();
-  const project = featured[state.spotlightIndex % featured.length];
-
-  els.spotlightPanel.innerHTML = `
-    <article class="spotlight-project">
-      <div class="project-badge-row">
-        <span class="project-badge">${escapeHtml(project.category)}</span>
-        <span class="project-badge">${escapeHtml(project.status)}</span>
-      </div>
-      <div>
-        <h3>${escapeHtml(project.title)}</h3>
-        <p class="project-summary">${escapeHtml(project.summary)}</p>
-      </div>
-      <p class="project-meta">${escapeHtml(project.year)} / ${escapeHtml(project.tags.join(" / "))}</p>
-      <a class="project-link" href="${escapeHtml(project.href)}">${escapeHtml(project.externalLabel)}</a>
-    </article>
-  `;
 }
 
 function renderFilters() {
@@ -627,11 +600,6 @@ function bindEvents() {
 
   els.copyEmail.addEventListener("click", copyEmail);
 
-  els.shuffleSpotlight.addEventListener("click", () => {
-    state.spotlightIndex = (state.spotlightIndex + 1) % getFeaturedProjects().length;
-    renderSpotlight();
-  });
-
   window.addEventListener("resize", queueNavCardIndicatorUpdate);
 
   if (document.fonts?.ready) {
@@ -649,10 +617,8 @@ function bindEvents() {
 
 function init() {
   state.route = getRouteFromHash();
-  state.spotlightIndex = new Date().getDate() % getFeaturedProjects().length;
 
   renderShell();
-  renderSpotlight();
   renderFilters();
   renderProjects();
   renderExplore();

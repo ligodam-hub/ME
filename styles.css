@@ -79,7 +79,6 @@ body::before {
 
 .topbar,
 .panel,
-.spotlight-card,
 .toolbar,
 .footer {
   backdrop-filter: blur(24px);
@@ -240,7 +239,6 @@ main {
 }
 
 .hero-copy,
-.spotlight-card,
 .panel,
 .toolbar,
 .footer {
@@ -249,7 +247,6 @@ main {
 }
 
 .hero-copy,
-.spotlight-card,
 .panel {
   padding: 1.5rem;
   background: var(--bg-elevated);
@@ -353,15 +350,6 @@ h1 {
   font-family: "Space Grotesk", sans-serif;
 }
 
-.spotlight-card {
-  display: grid;
-  align-content: start;
-  gap: 1.2rem;
-  background:
-    linear-gradient(180deg, rgba(14, 124, 134, 0.08), rgba(255, 255, 255, 0.86));
-}
-
-.spotlight-header,
 .section-heading,
 .panel-heading,
 .toolbar {
@@ -371,15 +359,9 @@ h1 {
   gap: 1rem;
 }
 
-.spotlight-header h2,
 .section-heading h2,
 .panel-heading h3 {
   margin: 0.35rem 0 0;
-}
-
-.spotlight-project {
-  display: grid;
-  gap: 1rem;
 }
 
 .project-badge-row,
@@ -695,7 +677,6 @@ h1 {
   }
 
   .section-heading,
-  .spotlight-header,
   .panel-heading,
   .toolbar,
   .footer {
@@ -1037,8 +1018,7 @@ body[data-route="home"] .page-shell {
   min-height: 10rem;
 }
 
-.latest-card h3,
-.recommend-card h2 {
+.latest-card h3 {
   margin: 0.35rem 0 0.6rem;
 }
 
@@ -1068,16 +1048,6 @@ body[data-route="home"] .page-shell {
 .social-link:first-child {
   color: white;
   background: linear-gradient(135deg, #1f2226, #111315);
-}
-
-.recommend-card {
-  grid-column: 2;
-  grid-row: 4;
-  min-height: 10.5rem;
-}
-
-.recommend-card .spotlight-header {
-  margin-bottom: 0.8rem;
 }
 
 .music-card {
@@ -1137,7 +1107,6 @@ body[data-route="home"] .page-shell {
   background: linear-gradient(90deg, #6fd7d1, #b7f1ee);
 }
 
-.spotlight-project h3,
 .latest-card h3 {
   color: #294652;
 }
@@ -1176,7 +1145,6 @@ body[data-route="home"] .page-shell {
   .calendar-card,
   .latest-card,
   .social-row-home,
-  .recommend-card,
   .music-card {
     grid-column: auto;
     grid-row: auto;
