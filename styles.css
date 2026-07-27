@@ -905,6 +905,10 @@ body[data-route="home"] main {
   color: #234954;
 }
 
+.nav-card__links.is-previewing a.active:not(.is-preview) {
+  color: #6d7c84;
+}
+
 .collage-card {
   grid-column: 2;
   grid-row: 1;
@@ -1303,6 +1307,13 @@ body[data-route="home"] main {
   border-color: transparent;
   background: linear-gradient(135deg, #57d6ca, #39bca8);
   box-shadow: 0 10px 18px rgba(57, 188, 168, 0.24);
+}
+
+.nav-card__links.is-previewing a.active:not(.is-preview) .nav-card__glyph {
+  color: #91a0a7;
+  background: rgba(255, 255, 255, 0.5);
+  border-color: rgba(103, 124, 130, 0.18);
+  box-shadow: none;
 }
 
 .nav-card__link-text {
