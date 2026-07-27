@@ -24,7 +24,7 @@ const siteConfig = {
     },
     {
       label: "小红书",
-      href: "#/explore",
+      href: "#/share",
       external: false,
       tone: "xiaohongshu",
       badge: "小",
@@ -43,7 +43,7 @@ const siteConfig = {
       title: "500h播客纪念&分享",
       excerpt: "可以听到许多有趣的视角。",
       date: "2026/4/22",
-      href: "#/notes",
+      href: "#/articles",
       thumb: "500h",
     },
   ],
@@ -65,21 +65,19 @@ const projects = [
     summary:
       "A personal website that works as portfolio, navigation hub, and future knowledge base without forcing every layer into the first release.",
     tags: ["portfolio", "navigation", "static-site"],
-    href: "#/projects",
+    href: "#/about",
     externalLabel: "Current build",
-    featured: true,
   },
   {
-    title: "Design Archive",
+    title: "X-Plore",
     category: "Frontend",
     year: "2026",
-    status: "Concept",
+    status: "Sharing",
     summary:
-      "A visual collection of interaction experiments, layout ideas, and UI references worth resurfacing when a page needs more character.",
-    tags: ["ui", "motion", "design-system"],
-    href: "#/explore",
-    externalLabel: "See exploration hub",
-    featured: true,
+      "A screenshot-inspired personal site experiment focused on calm glassmorphism, soft motion, and stronger information routing.",
+    tags: ["ui", "motion", "static-site"],
+    href: "#/share",
+    externalLabel: "See inspiration",
   },
   {
     title: "Project Atlas",
@@ -89,9 +87,8 @@ const projects = [
     summary:
       "A clearer index of shipped work that explains what each project is, why it exists, and where to go next.",
     tags: ["case-study", "engineering", "portfolio"],
-    href: "#/about",
+    href: "#/projects",
     externalLabel: "Read process",
-    featured: false,
   },
   {
     title: "Knowledge Base Beta",
@@ -101,9 +98,8 @@ const projects = [
     summary:
       "A staged notes system for essays, learning trails, and reference pages once the shell of the site feels stable.",
     tags: ["notes", "writing", "knowledge-base"],
-    href: "#/notes",
-    externalLabel: "View roadmap",
-    featured: false,
+    href: "#/articles",
+    externalLabel: "Open archive",
   },
   {
     title: "Useful Links Engine",
@@ -113,9 +109,8 @@ const projects = [
     summary:
       "A curated layer over raw bookmarks so links are grouped by intent and remain useful under pressure.",
     tags: ["resources", "curation", "workflow"],
-    href: "#/explore",
+    href: "#/blogs",
     externalLabel: "Browse links",
-    featured: true,
   },
   {
     title: "Public Writing Funnel",
@@ -125,67 +120,173 @@ const projects = [
     summary:
       "A content flow that ties projects, notes, and small updates together without making the homepage feel crowded.",
     tags: ["content", "strategy", "growth"],
-    href: "#/notes",
+    href: "#/articles",
     externalLabel: "Open notes plan",
-    featured: false,
   },
 ];
 
-const exploreGroups = [
+const articleArchive = [
   {
-    title: "Ship",
-    description: "Launch pages, demos, and the pieces that make the site feel active.",
-    links: [
-      { label: "Selected Projects", href: "#/projects" },
-      { label: "Featured Pick", href: "#/home" },
-      { label: "Story & Process", href: "#/about" },
+    year: "2026",
+    count: 7,
+    entries: [
+      { date: "04-22", title: "500h播客纪念&分享", tag: "Tech" },
+      { date: "04-19", title: "我的262个github仓库整理", tag: "idx" },
+      { date: "04-15", title: "48h 黑客松初体验 | 白嫖体todo", tag: "Agent" },
+      { date: "03-27", title: "Harness | autoresearch | Rust & Python", tag: "Agent" },
+      { date: "03-16", title: "关于openclaw", tag: "Tools" },
+      { date: "03-04", title: "公告", tag: "Update" },
+      { date: "02-04", title: "计算机学习分享", tag: "Study" },
     ],
   },
   {
-    title: "Collect",
-    description: "Keep useful inputs visible so the future notes archive has strong raw material.",
-    links: [
-      { label: "Notes Roadmap", href: "#/notes" },
-      { label: "Reserved Topics", href: "#/notes" },
-      { label: "Navigation Logic", href: "#/about" },
-    ],
-  },
-  {
-    title: "Connect",
-    description: "Make it easy for curious visitors to know where to go next.",
-    links: [
-      { label: "Copy Contact Email", href: "#/about", action: "copy-email" },
-      { label: "Project Overview", href: "#/projects" },
-      { label: "Site Home", href: "#/home" },
+    year: "2025",
+    count: 4,
+    entries: [
+      { date: "12-02", title: "算法学习分享", tag: "Algo" },
+      { date: "07-18", title: "我的一千多篇文章整合", tag: "sum" },
+      { date: "05-17", title: "System design", tag: "Design" },
+      { date: "02-14", title: "DeepSeek-从基座模型到推理能力", tag: "LLM" },
     ],
   },
 ];
 
-const roadmap = [
+const shareResources = [
   {
-    step: "Phase 1",
-    state: "Now",
-    copy: "Use the notes area as a clean placeholder with topic scaffolding and a visible plan.",
+    title: "Linux os+net",
+    url: "https://blog.csdn.net/2301_8017",
+    subtitle: "https://blog.csdn.net/2301_8017...",
+    tags: ["My Column", "OS"],
+    summary: "Linux、网络与系统方向的学习整理。",
+    stats: "Views: 141,040  Marks: 2,721",
+    rating: 5,
+    badge: "🐧",
   },
   {
-    step: "Phase 2",
-    state: "Next",
-    copy: "Add category pages for essays, learning trails, and project retrospectives.",
+    title: "LLM | SLM | vLLM",
+    url: "https://blog.csdn.net/2301_8017",
+    subtitle: "https://blog.csdn.net/2301_8017...",
+    tags: ["My Column", "LLM"],
+    summary: "模型推理、部署和笔记串起来的专题入口。",
+    stats: "Views: 59,257  Marks: 1,061",
+    rating: 5,
+    badge: "🤖",
   },
   {
-    step: "Phase 3",
-    state: "Later",
-    copy: "Introduce stronger indexing, recommendation logic, and cross-links back to projects.",
+    title: "Problem Solving",
+    url: "https://blog.csdn.net/2301_8017",
+    subtitle: "https://blog.csdn.net/2301_8017...",
+    tags: ["My Column", "Tools/Methods"],
+    summary: "熟悉配置各种平台的运行环境，快速总结解决冲突和报错。",
+    stats: "Views: 34,182  Marks: 234",
+    rating: 5,
+    badge: "🧩",
+  },
+  {
+    title: "CMU 15-445 & 大数据",
+    url: "https://blog.csdn.net/2301_8017",
+    subtitle: "https://blog.csdn.net/2301_8017...",
+    tags: ["My Column", "DB"],
+    summary: "一些lab、架构、文档笔记，踩坑也会留下来。",
+    stats: "Views: 18,367  Marks: 320",
+    rating: 5,
+    badge: "🗄️",
+  },
+  {
+    title: "AIoT",
+    url: "https://blog.csdn.net/2301_8017",
+    subtitle: "https://blog.csdn.net/2301_8017...",
+    tags: ["My Column", "IoT/Embedded"],
+    summary: "AI 与嵌入式落地的学习实践记录。",
+    stats: "Views: 36,505  Marks: 690",
+    rating: 4,
+    badge: "📡",
+  },
+  {
+    title: "Redis文档学习",
+    url: "https://blog.csdn.net/2301_8017",
+    subtitle: "https://blog.csdn.net/2301_8017...",
+    tags: ["My Column", "DB", "Backend"],
+    summary: "从缓存到数据结构，快&并发友好的基础笔记。",
+    stats: "Views: 34,380  Marks: 480",
+    rating: 5,
+    badge: "🟥",
   },
 ];
 
-const noteTopics = [
-  "AI & tooling",
-  "Frontend systems",
-  "Product thinking",
-  "Writing process",
-  "Experiments",
-  "Bookmarks worth keeping",
+const blogLinks = [
+  {
+    title: "lvyneko",
+    url: "https://lvyovo-wiki.tech",
+    note: "莫西莫西，欢迎 issue/email me 添加友链 (=^.^=)",
+    kind: "博客",
+    rating: 5,
+    badge: "🐱",
+  },
+  {
+    title: "Anthony Fu",
+    url: "https://antfu.me/",
+    note: "vue core team，神做事就像喝水一样轻松",
+    kind: "博客",
+    rating: 5,
+    badge: "🧪",
+  },
+  {
+    title: "Innei 静かな森",
+    url: "https://innei.in/",
+    note: "支持声产博主喵",
+    kind: "博客",
+    rating: 5,
+    badge: "🌲",
+  },
+  {
+    title: "Cassie Evans's Blog",
+    url: "https://www.cassie.codes/",
+    note: "GSAP 和 SVG 动画的厉害姐姐",
+    kind: "博客",
+    rating: 5,
+    badge: "🌈",
+  },
+  {
+    title: "猫鱼周刊",
+    url: "https://ameow.xyz/",
+    note: "猫鱼周刊，快乐划水 (。･∀･)ﾉ",
+    kind: "博客",
+    rating: 5,
+    badge: "🦦",
+  },
+  {
+    title: "十玖八柒",
+    url: "https://blog.ahzoo.cn/",
+    note: "后端 | 次次元 ovo",
+    kind: "博客",
+    rating: 5,
+    badge: "🎐",
+  },
+  {
+    title: "Kuro",
+    url: "https://www.elainafan.one/",
+    note: "好想像 kuro 一样会算法啊",
+    kind: "友链",
+    rating: 5,
+    badge: "🖤",
+  },
+  {
+    title: "loveapple",
+    url: "https://loveapple.icu/",
+    note: "RF Engineering | 一条喜欢苹果的水煮鱼",
+    kind: "友链",
+    rating: 5,
+    badge: "🍎",
+  },
+  {
+    title: "Jerry Yang",
+    url: "https://efjerryyang.github.io/",
+    note: "Rust | All in",
+    kind: "友链",
+    rating: 5,
+    badge: "🩵",
+  },
 ];
 
 const timeline = [
@@ -196,34 +297,36 @@ const timeline = [
   },
   {
     date: "Next step",
-    title: "Swap placeholder content for real case studies",
-    copy: "Projects should become richer before the notes area becomes deeper.",
+    title: "Wire route logic to visible views",
+    copy: "Navigation should feel like a guided browse, not a sudden context switch.",
   },
   {
     date: "Future phase",
-    title: "Connect knowledge base and portfolio",
-    copy: "Projects, essays, and navigation links should reinforce each other instead of living as separate pages.",
+    title: "Swap placeholders for real writing and long-term curation",
+    copy: "Articles, blogs, and resources can deepen without changing the shell again.",
   },
 ];
+
+const allowedRoutes = new Set(["home", "articles", "projects", "about", "share", "blogs"]);
+const categories = ["All", ...new Set(projects.map((project) => project.category))];
+const shareFilters = ["全部", ...new Set(shareResources.flatMap((resource) => resource.tags))];
+const blogFilters = ["全部", ...new Set(blogLinks.map((link) => link.kind))];
+const calendarWeekLabels = ["一", "二", "三", "四", "五", "六", "日"];
 
 const state = {
   route: "home",
   category: "All",
   query: "",
+  shareFilter: "全部",
+  shareQuery: "",
+  blogFilter: "全部",
+  blogQuery: "",
+  isTransitioning: false,
+  pendingRoute: "",
 };
 
-const categories = ["All", ...new Set(projects.map((project) => project.category))];
-const calendarWeekLabels = [
-  "\u4e00",
-  "\u4e8c",
-  "\u4e09",
-  "\u56db",
-  "\u4e94",
-  "\u516d",
-  "\u65e5",
-];
-
 const els = {
+  main: document.querySelector("main"),
   brandName: document.getElementById("brand-name"),
   brandNameHome: document.getElementById("brand-name-home"),
   brandRole: document.getElementById("brand-role"),
@@ -239,14 +342,20 @@ const els = {
   calendarDays: document.getElementById("calendar-days"),
   socialRow: document.getElementById("social-row"),
   latestCard: document.getElementById("latest-card"),
+  articleArchive: document.getElementById("article-archive"),
   projectFilters: document.getElementById("project-filters"),
   projectSearch: document.getElementById("project-search"),
   projectGrid: document.getElementById("project-grid"),
   projectCount: document.getElementById("project-count"),
   projectEmpty: document.getElementById("project-empty"),
-  exploreGroups: document.getElementById("explore-groups"),
-  roadmapList: document.getElementById("roadmap-list"),
-  noteTopics: document.getElementById("note-topics"),
+  shareFilters: document.getElementById("share-filters"),
+  shareSearch: document.getElementById("share-search"),
+  shareGrid: document.getElementById("share-grid"),
+  shareEmpty: document.getElementById("share-empty"),
+  blogFilters: document.getElementById("blog-filters"),
+  blogSearch: document.getElementById("blog-search"),
+  blogGrid: document.getElementById("blog-grid"),
+  blogEmpty: document.getElementById("blog-empty"),
   timelineList: document.getElementById("timeline-list"),
   profileList: document.getElementById("profile-list"),
   quoteText: document.getElementById("quote-text"),
@@ -256,7 +365,7 @@ const els = {
   navCardIndicator: document.getElementById("nav-card-indicator"),
   copyEmail: document.getElementById("copy-email"),
   routeSections: [...document.querySelectorAll(".route-section")],
-  routeLinks: [...document.querySelectorAll("[data-route-link]")],
+  routeLinks: [...document.querySelectorAll("[data-route-nav]")],
 };
 
 let navCardPreviewLink = null;
@@ -272,8 +381,21 @@ function escapeHtml(value) {
 
 function getRouteFromHash() {
   const route = window.location.hash.replace(/^#\//, "") || "home";
-  const allowedRoutes = ["home", "projects", "explore", "notes", "about"];
-  return allowedRoutes.includes(route) ? route : "home";
+  return allowedRoutes.has(route) ? route : "home";
+}
+
+function getRouteFromHref(href) {
+  if (!href) return null;
+
+  const match = href.match(/^#\/([a-z0-9-]+)/i);
+  if (!match) return null;
+
+  const route = match[1].toLowerCase();
+  return allowedRoutes.has(route) ? route : null;
+}
+
+function getNavActiveRoute() {
+  return state.route === "home" ? "articles" : state.route;
 }
 
 function getGreetingByHour(hour) {
@@ -296,6 +418,22 @@ function formatClock() {
     minute: "2-digit",
     hour12: false,
   });
+}
+
+function prefersReducedMotion() {
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+function renderStars(count) {
+  return `
+    <div class="rating-row" aria-label="${count} out of 5 stars">
+      ${Array.from(
+        { length: 5 },
+        (_, index) =>
+          `<span class="rating-star${index < count ? " is-active" : ""}" aria-hidden="true">★</span>`,
+      ).join("")}
+    </div>
+  `;
 }
 
 function renderSocialLink(link) {
@@ -341,6 +479,7 @@ function renderCalendar() {
 function renderShell() {
   const greeting = getGreetingByHour(new Date().getHours());
   const heroTitle = `${escapeHtml(greeting)}<br />I'm <span class="accent-name">${escapeHtml(siteConfig.homeBrand)}</span>, nice to meet you!`;
+  const latest = siteConfig.latestUpdates[0];
 
   els.brandName.textContent = siteConfig.homeBrand;
   els.brandRole.textContent = siteConfig.role;
@@ -353,8 +492,6 @@ function renderShell() {
   els.homeDate.textContent = formatDateLine();
   els.digitalClock.textContent = formatClock();
   els.socialRow.innerHTML = siteConfig.socials.map(renderSocialLink).join("");
-
-  const latest = siteConfig.latestUpdates[0];
   els.latestCard.innerHTML = `
     <p class="mini-label">最新文章</p>
     <div class="latest-card__entry">
@@ -366,7 +503,6 @@ function renderShell() {
       </div>
     </div>
   `;
-
   els.profileList.innerHTML = siteConfig.aboutBullets
     .map((bullet) => `<li>${escapeHtml(bullet)}</li>`)
     .join("");
@@ -375,7 +511,36 @@ function renderShell() {
   renderCalendar();
 }
 
-function renderFilters() {
+function renderArticles() {
+  els.articleArchive.innerHTML = articleArchive
+    .map(
+      (yearBlock) => `
+        <article class="panel archive-year-card">
+          <div class="archive-year-card__header">
+            <h3>${escapeHtml(yearBlock.year)}年</h3>
+            <p>${escapeHtml(String(yearBlock.count))} 篇文章</p>
+          </div>
+          <div class="archive-entry-list">
+            ${yearBlock.entries
+              .map(
+                (entry) => `
+                  <article class="archive-entry">
+                    <span class="archive-entry__date">${escapeHtml(entry.date)}</span>
+                    <span class="archive-entry__dot" aria-hidden="true"></span>
+                    <span class="archive-entry__title">${escapeHtml(entry.title)}</span>
+                    <span class="archive-entry__tag">#${escapeHtml(entry.tag)}</span>
+                  </article>
+                `,
+              )
+              .join("")}
+          </div>
+        </article>
+      `,
+    )
+    .join("");
+}
+
+function renderProjectFilters() {
   els.projectFilters.innerHTML = categories
     .map(
       (category) => `
@@ -406,20 +571,16 @@ function getFilteredProjects() {
     ]
       .join(" ")
       .toLowerCase();
-    const matchesQuery = !query || haystack.includes(query);
 
-    return matchesCategory && matchesQuery;
+    return matchesCategory && (!query || haystack.includes(query));
   });
 }
 
 function renderProjects() {
   const visibleProjects = getFilteredProjects();
 
-  els.projectCount.textContent = `${visibleProjects.length} project${
-    visibleProjects.length === 1 ? "" : "s"
-  } visible`;
+  els.projectCount.textContent = `${visibleProjects.length} 个项目`;
   els.projectEmpty.classList.toggle("hidden", visibleProjects.length > 0);
-
   els.projectGrid.innerHTML = visibleProjects
     .map(
       (project) => `
@@ -442,31 +603,59 @@ function renderProjects() {
     .join("");
 }
 
-function renderExplore() {
-  els.exploreGroups.innerHTML = exploreGroups
+function renderShareFilters() {
+  els.shareFilters.innerHTML = shareFilters
     .map(
-      (group) => `
-        <article class="panel">
-          <div class="panel-heading">
+      (filter) => `
+        <button
+          class="filter-chip ${state.shareFilter === filter ? "active" : ""}"
+          type="button"
+          data-share-filter="${escapeHtml(filter)}"
+        >
+          ${escapeHtml(filter)}
+        </button>
+      `,
+    )
+    .join("");
+}
+
+function getFilteredShareResources() {
+  const query = state.shareQuery.trim().toLowerCase();
+
+  return shareResources.filter((resource) => {
+    const matchesFilter =
+      state.shareFilter === "全部" || resource.tags.includes(state.shareFilter);
+    const haystack = [resource.title, resource.subtitle, resource.summary, resource.tags.join(" ")]
+      .join(" ")
+      .toLowerCase();
+
+    return matchesFilter && (!query || haystack.includes(query));
+  });
+}
+
+function renderShareResources() {
+  const visibleResources = getFilteredShareResources();
+
+  els.shareEmpty.classList.toggle("hidden", visibleResources.length > 0);
+  els.shareGrid.innerHTML = visibleResources
+    .map(
+      (resource) => `
+        <article class="panel resource-card">
+          <div class="resource-card__top">
+            <div class="resource-card__badge">${escapeHtml(resource.badge)}</div>
             <div>
-              <p class="mini-label">Group</p>
-              <h3>${escapeHtml(group.title)}</h3>
+              <h3>${escapeHtml(resource.title)}</h3>
+              <p class="project-meta">${escapeHtml(resource.subtitle)}</p>
             </div>
           </div>
-          <p>${escapeHtml(group.description)}</p>
-          <div class="group-list">
-            ${group.links
-              .map(
-                (link) => `
-                  <a
-                    href="${escapeHtml(link.href)}"
-                    ${link.action ? `data-action="${escapeHtml(link.action)}"` : ""}
-                  >
-                    ${escapeHtml(link.label)}
-                  </a>
-                `,
-              )
-              .join("")}
+          ${renderStars(resource.rating)}
+          <div class="chip-row resource-card__tags">
+            ${resource.tags.map((tag) => `<span class="topic-pill">${escapeHtml(tag)}</span>`).join("")}
+          </div>
+          <p class="project-summary">${escapeHtml(resource.summary)}</p>
+          <p class="project-meta">${escapeHtml(resource.stats)}</p>
+          <div class="project-actions">
+            <a class="chip-link" href="${escapeHtml(resource.url)}" target="_blank" rel="noreferrer">打开资源</a>
           </div>
         </article>
       `,
@@ -474,23 +663,56 @@ function renderExplore() {
     .join("");
 }
 
-function renderRoadmap() {
-  els.roadmapList.innerHTML = roadmap
+function renderBlogFilters() {
+  els.blogFilters.innerHTML = blogFilters
     .map(
-      (item) => `
-        <article class="roadmap-item">
-          <div class="roadmap-top">
-            <span class="roadmap-step">${escapeHtml(item.step)}</span>
-            <span class="roadmap-state">${escapeHtml(item.state)}</span>
-          </div>
-          <p class="roadmap-copy">${escapeHtml(item.copy)}</p>
-        </article>
+      (filter) => `
+        <button
+          class="filter-chip ${state.blogFilter === filter ? "active" : ""}"
+          type="button"
+          data-blog-filter="${escapeHtml(filter)}"
+        >
+          ${escapeHtml(filter)}
+        </button>
       `,
     )
     .join("");
+}
 
-  els.noteTopics.innerHTML = noteTopics
-    .map((topic) => `<div class="topic-pill">${escapeHtml(topic)}</div>`)
+function getFilteredBlogLinks() {
+  const query = state.blogQuery.trim().toLowerCase();
+
+  return blogLinks.filter((link) => {
+    const matchesFilter = state.blogFilter === "全部" || link.kind === state.blogFilter;
+    const haystack = [link.title, link.url, link.note, link.kind].join(" ").toLowerCase();
+    return matchesFilter && (!query || haystack.includes(query));
+  });
+}
+
+function renderBlogLinks() {
+  const visibleLinks = getFilteredBlogLinks();
+
+  els.blogEmpty.classList.toggle("hidden", visibleLinks.length > 0);
+  els.blogGrid.innerHTML = visibleLinks
+    .map(
+      (link) => `
+        <article class="panel blog-card">
+          <div class="blog-card__top">
+            <div class="blog-card__badge">${escapeHtml(link.badge)}</div>
+            <div>
+              <h3>${escapeHtml(link.title)}</h3>
+              <p class="project-meta">${escapeHtml(link.url)}</p>
+            </div>
+          </div>
+          ${renderStars(link.rating)}
+          <p class="project-summary">${escapeHtml(link.note)}</p>
+          <div class="project-actions">
+            <span class="topic-pill">${escapeHtml(link.kind)}</span>
+            <a class="chip-link" href="${escapeHtml(link.url)}" target="_blank" rel="noreferrer">访问</a>
+          </div>
+        </article>
+      `,
+    )
     .join("");
 }
 
@@ -512,7 +734,6 @@ function renderTimeline() {
 
 function getActiveNavCardLink() {
   if (!els.navCardLinks) return null;
-
   return els.navCardLinks.querySelector("a.active") ?? els.navCardLinks.querySelector("a");
 }
 
@@ -562,29 +783,21 @@ function clearNavCardPreview() {
   queueNavCardIndicatorUpdate();
 }
 
-function refreshLiveTime() {
-  const greeting = getGreetingByHour(new Date().getHours());
-  const nextTitle = `${escapeHtml(greeting)}<br />I'm <span class="accent-name">${escapeHtml(siteConfig.homeBrand)}</span>, nice to meet you!`;
-  const nextDateLine = formatDateLine();
-
-  els.digitalClock.textContent = formatClock();
-  els.heroTitle.innerHTML = nextTitle;
-
-  if (els.homeDate.textContent !== nextDateLine) {
-    els.homeDate.textContent = nextDateLine;
-    renderCalendar();
-  }
+function getRouteSection(route) {
+  return els.routeSections.find((section) => section.dataset.route === route) ?? null;
 }
 
 function updateRouteUi() {
+  const activeRoute = getNavActiveRoute();
+
   els.routeSections.forEach((section) => {
     const isActive = section.dataset.route === state.route;
     section.classList.toggle("route-active", isActive);
   });
 
   els.routeLinks.forEach((link) => {
-    const isActive = link.getAttribute("href") === `#/${state.route}`;
-    link.classList.toggle("active", isActive);
+    const linkRoute = getRouteFromHref(link.getAttribute("href"));
+    link.classList.toggle("active", linkRoute === activeRoute);
   });
 
   document.body.setAttribute("data-route", state.route);
@@ -593,23 +806,140 @@ function updateRouteUi() {
   queueNavCardIndicatorUpdate();
 }
 
+function animateElement(element, keyframes, options) {
+  if (prefersReducedMotion()) return Promise.resolve();
+
+  const animation = element.animate(keyframes, options);
+  return new Promise((resolve) => {
+    animation.addEventListener("finish", resolve, { once: true });
+    animation.addEventListener("cancel", resolve, { once: true });
+  });
+}
+
+function syncHistory(route, replace = false) {
+  const nextHash = `#/${route}`;
+  if (window.location.hash === nextHash) return;
+
+  if (replace) {
+    window.history.replaceState(null, "", nextHash);
+    return;
+  }
+
+  window.history.pushState(null, "", nextHash);
+}
+
+async function transitionToRoute(nextRoute, { replace = false, syncLocation = false } = {}) {
+  if (!allowedRoutes.has(nextRoute)) return;
+
+  if (syncLocation) {
+    syncHistory(nextRoute, replace);
+  }
+
+  if (state.isTransitioning) {
+    state.pendingRoute = nextRoute;
+    return;
+  }
+
+  if (nextRoute === state.route) {
+    updateRouteUi();
+    return;
+  }
+
+  const currentSection = getRouteSection(state.route);
+  const nextSection = getRouteSection(nextRoute);
+  if (!nextSection) return;
+
+  if (!currentSection || prefersReducedMotion()) {
+    state.route = nextRoute;
+    updateRouteUi();
+    window.scrollTo({ top: 0, behavior: "auto" });
+    return;
+  }
+
+  state.isTransitioning = true;
+  clearNavCardPreview();
+
+  const currentHeight = els.main?.offsetHeight ?? 0;
+  if (els.main && currentHeight > 0) {
+    els.main.style.minHeight = `${currentHeight}px`;
+  }
+
+  await animateElement(
+    currentSection,
+    [
+      { opacity: 1, transform: "translate3d(0, 0, 0) scale(1)", filter: "blur(0px)" },
+      { opacity: 0, transform: "translate3d(0, 16px, 0) scale(0.985)", filter: "blur(5px)" },
+    ],
+    {
+      duration: 220,
+      easing: "cubic-bezier(0.4, 0, 1, 1)",
+      fill: "forwards",
+    },
+  );
+
+  state.route = nextRoute;
+  updateRouteUi();
+
+  const nextHeight = nextSection.offsetHeight;
+  if (els.main && currentHeight > 0) {
+    els.main.style.minHeight = `${Math.max(currentHeight, nextHeight)}px`;
+  }
+
+  await animateElement(
+    nextSection,
+    [
+      { opacity: 0, transform: "translate3d(0, 24px, 0) scale(0.985)", filter: "blur(6px)" },
+      { opacity: 1, transform: "translate3d(0, 0, 0) scale(1)", filter: "blur(0px)" },
+    ],
+    {
+      duration: 360,
+      easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+      fill: "both",
+    },
+  );
+
+  if (els.main) {
+    els.main.style.removeProperty("min-height");
+  }
+
+  state.isTransitioning = false;
+
+  if (state.pendingRoute && state.pendingRoute !== state.route) {
+    const queuedRoute = state.pendingRoute;
+    state.pendingRoute = "";
+    transitionToRoute(queuedRoute);
+    return;
+  }
+
+  state.pendingRoute = "";
+  window.scrollTo({
+    top: 0,
+    behavior: prefersReducedMotion() ? "auto" : "smooth",
+  });
+}
+
 async function copyEmail() {
   try {
     await navigator.clipboard.writeText(siteConfig.contact.email);
-    els.copyEmail.textContent = "Email Copied";
+    els.copyEmail.textContent = "邮箱已复制";
     window.setTimeout(() => {
-      els.copyEmail.textContent = "Copy Email";
+      els.copyEmail.textContent = "复制邮箱";
     }, 1600);
   } catch {
     els.copyEmail.textContent = siteConfig.contact.email;
   }
 }
 
+function handleLocationChange() {
+  const route = getRouteFromHash();
+  if (route === state.route) return;
+
+  transitionToRoute(route);
+}
+
 function bindEvents() {
-  window.addEventListener("hashchange", () => {
-    state.route = getRouteFromHash();
-    updateRouteUi();
-  });
+  window.addEventListener("hashchange", handleLocationChange);
+  window.addEventListener("popstate", handleLocationChange);
 
   if (els.navCardLinks) {
     els.navCardLinks.addEventListener("pointerover", (event) => {
@@ -646,7 +976,7 @@ function bindEvents() {
     if (!target) return;
 
     state.category = target.dataset.filter;
-    renderFilters();
+    renderProjectFilters();
     renderProjects();
   });
 
@@ -655,13 +985,40 @@ function bindEvents() {
     renderProjects();
   });
 
+  els.shareFilters.addEventListener("click", (event) => {
+    const target = event.target.closest("[data-share-filter]");
+    if (!target) return;
+
+    state.shareFilter = target.dataset.shareFilter;
+    renderShareFilters();
+    renderShareResources();
+  });
+
+  els.shareSearch.addEventListener("input", (event) => {
+    state.shareQuery = event.target.value;
+    renderShareResources();
+  });
+
+  els.blogFilters.addEventListener("click", (event) => {
+    const target = event.target.closest("[data-blog-filter]");
+    if (!target) return;
+
+    state.blogFilter = target.dataset.blogFilter;
+    renderBlogFilters();
+    renderBlogLinks();
+  });
+
+  els.blogSearch.addEventListener("input", (event) => {
+    state.blogQuery = event.target.value;
+    renderBlogLinks();
+  });
+
   els.menuToggle.addEventListener("click", () => {
     const expanded = els.siteNav.classList.toggle("open");
     els.menuToggle.setAttribute("aria-expanded", String(expanded));
   });
 
   els.copyEmail.addEventListener("click", copyEmail);
-
   window.addEventListener("resize", queueNavCardIndicatorUpdate);
 
   if (document.fonts?.ready) {
@@ -670,26 +1027,55 @@ function bindEvents() {
 
   document.addEventListener("click", (event) => {
     const actionTarget = event.target.closest("[data-action='copy-email']");
-    if (!actionTarget) return;
+    if (actionTarget) {
+      event.preventDefault();
+      copyEmail();
+      return;
+    }
+
+    const routeTarget = event.target.closest("a[href^='#/']");
+    if (!(routeTarget instanceof HTMLAnchorElement)) return;
+
+    const route = getRouteFromHref(routeTarget.getAttribute("href"));
+    if (!route) return;
 
     event.preventDefault();
-    copyEmail();
+    transitionToRoute(route, { syncLocation: true });
   });
 }
 
 function init() {
+  if (!window.location.hash) {
+    syncHistory("home", true);
+  }
+
   state.route = getRouteFromHash();
 
   renderShell();
-  renderFilters();
+  renderArticles();
+  renderProjectFilters();
   renderProjects();
-  renderExplore();
-  renderRoadmap();
+  renderShareFilters();
+  renderShareResources();
+  renderBlogFilters();
+  renderBlogLinks();
   renderTimeline();
   updateRouteUi();
   bindEvents();
   queueNavCardIndicatorUpdate();
-  window.setInterval(refreshLiveTime, 1000);
+  window.setInterval(() => {
+    const greeting = getGreetingByHour(new Date().getHours());
+    const nextTitle = `${escapeHtml(greeting)}<br />I'm <span class="accent-name">${escapeHtml(siteConfig.homeBrand)}</span>, nice to meet you!`;
+    const nextDateLine = formatDateLine();
+
+    els.digitalClock.textContent = formatClock();
+    els.heroTitle.innerHTML = nextTitle;
+
+    if (els.homeDate.textContent !== nextDateLine) {
+      els.homeDate.textContent = nextDateLine;
+      renderCalendar();
+    }
+  }, 1000);
 }
 
 init();

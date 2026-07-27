@@ -24,8 +24,8 @@
     <div class="page-shell">
       <header class="topbar">
         <a class="brand" href="#/home" aria-label="Go to home">
-          <span class="brand-mark">ME</span>
-          <span class="brand-copy">
+          <span class="brand-mark brand-mark--avatar"></span>
+          <span class="brand-copy brand-copy--hidden">
             <strong id="brand-name">ME</strong>
             <small id="brand-role">Portfolio & Navigation Hub</small>
           </span>
@@ -42,16 +42,29 @@
         </button>
 
         <nav class="site-nav" id="site-nav" aria-label="Primary">
-          <a data-route-link href="#/home">Home</a>
-          <a data-route-link href="#/projects">Projects</a>
-          <a data-route-link href="#/explore">Explore</a>
-          <a data-route-link href="#/notes">Notes</a>
-          <a data-route-link href="#/about">About</a>
+          <a data-route-nav href="#/articles" aria-label="近期文章">
+            <span class="site-nav__glyph nav-card__glyph nav-card__glyph--recent" aria-hidden="true"></span>
+            <span class="sr-only">近期文章</span>
+          </a>
+          <a data-route-nav href="#/projects" aria-label="我的项目">
+            <span class="site-nav__glyph nav-card__glyph nav-card__glyph--projects" aria-hidden="true"></span>
+            <span class="sr-only">我的项目</span>
+          </a>
+          <a data-route-nav href="#/about" aria-label="关于网站">
+            <span class="site-nav__glyph nav-card__glyph nav-card__glyph--about" aria-hidden="true"></span>
+            <span class="sr-only">关于网站</span>
+          </a>
+          <a data-route-nav href="#/share" aria-label="推荐分享">
+            <span class="site-nav__glyph nav-card__glyph nav-card__glyph--share" aria-hidden="true"></span>
+            <span class="sr-only">推荐分享</span>
+          </a>
+          <a data-route-nav href="#/blogs" aria-label="优秀博客">
+            <span class="site-nav__glyph nav-card__glyph nav-card__glyph--blogs" aria-hidden="true"></span>
+            <span class="sr-only">优秀博客</span>
+          </a>
         </nav>
 
-        <button class="ghost-button" id="copy-email" type="button">
-          Copy Email
-        </button>
+        <button class="ghost-button" id="copy-email" type="button">复制邮箱</button>
       </header>
 
       <main>
@@ -69,23 +82,23 @@
                 <p class="nav-card__label">GENERAL</p>
                 <nav class="nav-card__links">
                   <span class="nav-card__indicator" id="nav-card-indicator" aria-hidden="true"></span>
-                  <a data-route-link href="#/home">
+                  <a data-route-nav href="#/articles">
                     <span class="nav-card__glyph nav-card__glyph--recent" aria-hidden="true"></span>
                     <span class="nav-card__link-text">近期文章</span>
                   </a>
-                  <a data-route-link href="#/projects">
+                  <a data-route-nav href="#/projects">
                     <span class="nav-card__glyph nav-card__glyph--projects" aria-hidden="true"></span>
                     <span class="nav-card__link-text">我的项目</span>
                   </a>
-                  <a data-route-link href="#/about">
+                  <a data-route-nav href="#/about">
                     <span class="nav-card__glyph nav-card__glyph--about" aria-hidden="true"></span>
                     <span class="nav-card__link-text">关于网站</span>
                   </a>
-                  <a data-route-link href="#/explore">
+                  <a data-route-nav href="#/share">
                     <span class="nav-card__glyph nav-card__glyph--share" aria-hidden="true"></span>
                     <span class="nav-card__link-text">推荐分享</span>
                   </a>
-                  <a data-route-link href="#/notes">
+                  <a data-route-nav href="#/blogs">
                     <span class="nav-card__glyph nav-card__glyph--blogs" aria-hidden="true"></span>
                     <span class="nav-card__link-text">优秀博客</span>
                   </a>
@@ -118,7 +131,7 @@
             </div>
 
             <div class="home-column home-column--right">
-              <a class="home-card action-card" href="#/notes">
+              <a class="home-card action-card" href="#/articles">
                 <span class="action-card__icon" aria-hidden="true">&#9998;</span>
                 <span>写文章</span>
               </a>
@@ -150,7 +163,18 @@
           </div>
         </section>
 
-        <section class="route-section" data-route="projects">
+        <section class="route-section route-section--view" data-route="articles">
+          <div class="view-toolbar view-toolbar--center">
+            <div class="view-switch" aria-label="文章视图">
+              <button class="view-switch__item active" type="button">年</button>
+              <button class="view-switch__item" type="button">月</button>
+              <button class="view-switch__item" type="button">分类</button>
+            </div>
+          </div>
+          <div class="archive-year-list" id="article-archive"></div>
+        </section>
+
+        <section class="route-section route-section--view" data-route="projects">
           <div class="section-heading">
             <div>
               <p class="eyebrow">Projects</p>
@@ -178,51 +202,37 @@
           </div>
         </section>
 
-        <section class="route-section" data-route="explore">
-          <div class="section-heading">
-            <div>
-              <p class="eyebrow">Explore</p>
-              <h2>A launchpad for links that should stay easy to resurface</h2>
-            </div>
-            <p class="section-note">
-              This page is meant to feel curated, not like a storage drawer.
-            </p>
+        <section class="route-section route-section--view" data-route="share">
+          <div class="view-toolbar view-toolbar--stack">
+            <label class="search-field search-field--wide">
+              <span>搜索资源</span>
+              <input id="share-search" type="search" placeholder="搜索资源..." />
+            </label>
+            <div class="chip-row chip-row--center" id="share-filters"></div>
           </div>
-          <div class="panel-grid" id="explore-groups"></div>
-        </section>
-
-        <section class="route-section" data-route="notes">
-          <div class="section-heading">
-            <div>
-              <p class="eyebrow">Notes</p>
-              <h2>Knowledge base placeholder, structured before it grows dense</h2>
-            </div>
-            <p class="section-note">
-              The notes area is staged on purpose so the site can ship without fake
-              fullness.
-            </p>
-          </div>
-
-          <div class="panel-grid notes-layout">
-            <article class="panel">
-              <div class="panel-heading">
-                <p class="mini-label">Roadmap</p>
-                <h3>How the notes area will evolve</h3>
-              </div>
-              <div class="roadmap-list" id="roadmap-list"></div>
-            </article>
-
-            <article class="panel muted-panel">
-              <div class="panel-heading">
-                <p class="mini-label">Placeholder</p>
-                <h3>Reserved categories</h3>
-              </div>
-              <div class="placeholder-grid" id="note-topics"></div>
-            </article>
+          <div class="resource-grid" id="share-grid"></div>
+          <div class="empty-state hidden" id="share-empty">
+            <h3>还没有匹配项</h3>
+            <p>换个关键词，或者切回更宽一点的分类。</p>
           </div>
         </section>
 
-        <section class="route-section" data-route="about">
+        <section class="route-section route-section--view" data-route="blogs">
+          <div class="view-toolbar view-toolbar--stack">
+            <label class="search-field search-field--wide">
+              <span>搜索博客</span>
+              <input id="blog-search" type="search" placeholder="搜索博客..." />
+            </label>
+            <div class="chip-row chip-row--center" id="blog-filters"></div>
+          </div>
+          <div class="blog-grid" id="blog-grid"></div>
+          <div class="empty-state hidden" id="blog-empty">
+            <h3>暂时没搜到</h3>
+            <p>这一页先留了占位结构，后面可以继续补你想收录的博客。</p>
+          </div>
+        </section>
+
+        <section class="route-section route-section--view" data-route="about">
           <div class="section-heading">
             <div>
               <p class="eyebrow">About</p>
