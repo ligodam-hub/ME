@@ -72,8 +72,8 @@
       <main>
         <section class="route-section route-active" data-route="home">
           <div class="home-snapshot">
-            <div class="home-column home-column--left">
-              <article class="home-card nav-card">
+            <div class="home-column home-column--left" data-home-column="left">
+              <article class="home-card nav-card" data-layout-item="nav">
                 <div class="nav-card__profile">
                   <div class="nav-card__avatar"></div>
                   <div>
@@ -107,11 +107,11 @@
                 </nav>
               </article>
 
-              <article class="home-card latest-card" id="latest-card"></article>
+              <article class="home-card latest-card" id="latest-card" data-layout-item="latest"></article>
             </div>
 
-            <div class="home-column home-column--center">
-              <article class="home-card collage-card" aria-hidden="true">
+            <div class="home-column home-column--center" data-home-column="center">
+              <article class="home-card collage-card" aria-hidden="true" data-layout-item="collage">
                 <div class="collage-card__rail"></div>
                 <div class="collage-stack">
                   <div class="collage-note note-a"></div>
@@ -122,33 +122,56 @@
                 </div>
               </article>
 
-              <article class="home-card greeting-card">
+              <article class="home-card greeting-card" data-layout-item="greeting">
                 <div class="greeting-card__avatar"></div>
                 <p class="eyebrow" id="home-date">2026/7/27 周一</p>
                 <h1 id="hero-title">Good Morning<br />I'm lvy, nice to meet you!</h1>
                 <p class="hero-description" id="hero-description">一个先放作品、再慢慢长成知识库的小站。</p>
               </article>
 
-              <div class="social-row social-row-home" id="social-row"></div>
+              <div class="social-row social-row-home" id="social-row" data-layout-item="socials"></div>
             </div>
 
-            <div class="home-column home-column--right">
-              <a class="home-card action-card" href="#/articles">
-                <span class="action-card__icon" aria-hidden="true">&#9998;</span>
-                <span>写文章</span>
-              </a>
+            <div class="home-column home-column--right" data-home-column="right">
+              <div class="home-tools-row">
+                <a class="home-card action-card" href="#/articles">
+                  <span class="action-card__icon" aria-hidden="true">&#9998;</span>
+                  <span>写文章</span>
+                </a>
+                <button
+                  class="settings-trigger"
+                  id="settings-toggle"
+                  type="button"
+                  aria-haspopup="dialog"
+                  aria-controls="settings-panel"
+                  aria-expanded="false"
+                  aria-label="打开网站设置"
+                >
+                  <span class="settings-trigger__dots" aria-hidden="true">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  </span>
+                </button>
+              </div>
 
-              <article class="home-card clock-card">
+              <article class="home-card clock-card" data-layout-item="clock">
                 <div class="digital-clock" id="digital-clock">11:25</div>
               </article>
 
-              <article class="home-card calendar-card">
+              <article class="home-card calendar-card" data-layout-item="calendar">
                 <p class="calendar-title" id="calendar-month">2026/7/27 周一</p>
                 <div class="calendar-week" id="calendar-week"></div>
                 <div class="calendar-days" id="calendar-days"></div>
               </article>
 
-              <article class="home-card music-card">
+              <article class="home-card music-card" data-layout-item="music">
                 <div class="music-card__meta">
                   <span class="music-card__icon" aria-hidden="true">&#9835;</span>
                   <div>
@@ -276,6 +299,155 @@
         </p>
         <p>&copy; <span id="footer-year"></span></p>
       </footer>
+
+      <div class="settings-panel" id="settings-panel" hidden>
+        <div class="settings-panel__scrim" data-settings-dismiss></div>
+        <section
+          class="settings-panel__dialog"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="settings-title"
+        >
+          <div class="settings-panel__header">
+            <div>
+              <p class="mini-label">Customize</p>
+              <h2 id="settings-title">网站 UI 设置</h2>
+              <p class="settings-panel__hint">调整后可以先预览，再决定是否保存到当前浏览器。</p>
+            </div>
+            <div class="settings-panel__actions">
+              <button class="secondary-button" id="settings-preview" type="button">预览</button>
+              <button class="secondary-button" id="settings-cancel" type="button">取消</button>
+              <button class="primary-button" id="settings-save" type="button">保存设置</button>
+            </div>
+          </div>
+
+          <div class="settings-tabs" id="settings-tabs" role="tablist" aria-label="设置分区">
+            <button class="settings-tab active" data-settings-tab="site" type="button" role="tab" aria-selected="true">
+              网站设置
+            </button>
+            <button class="settings-tab" data-settings-tab="theme" type="button" role="tab" aria-selected="false">
+              色彩配置
+            </button>
+            <button class="settings-tab" data-settings-tab="layout" type="button" role="tab" aria-selected="false">
+              首页布局
+            </button>
+          </div>
+
+          <div class="settings-panel__content">
+            <section class="settings-view active" data-settings-view="site">
+              <div class="settings-form-grid">
+                <label class="settings-field">
+                  <span>站点标题</span>
+                  <input class="settings-input" data-settings-field="site.brand" type="text" maxlength="32" />
+                </label>
+                <label class="settings-field">
+                  <span>首页称呼</span>
+                  <input class="settings-input" data-settings-field="site.homeBrand" type="text" maxlength="24" />
+                </label>
+                <label class="settings-field">
+                  <span>顶部副标题</span>
+                  <input class="settings-input" data-settings-field="site.role" type="text" maxlength="80" />
+                </label>
+                <label class="settings-field">
+                  <span>当前状态</span>
+                  <input class="settings-input" data-settings-field="site.status" type="text" maxlength="24" />
+                </label>
+                <label class="settings-field">
+                  <span>联系邮箱</span>
+                  <input class="settings-input" data-settings-field="site.email" type="email" maxlength="80" />
+                </label>
+                <label class="settings-field">
+                  <span>头像符号</span>
+                  <input class="settings-input" data-settings-field="site.avatarEmoji" type="text" maxlength="2" />
+                </label>
+                <label class="settings-field settings-field--wide">
+                  <span>站点描述</span>
+                  <textarea class="settings-input settings-input--area" data-settings-field="site.description" rows="5"></textarea>
+                </label>
+              </div>
+            </section>
+
+            <section class="settings-view" data-settings-view="theme">
+              <div class="settings-section">
+                <div class="settings-section__header">
+                  <div>
+                    <h3>基础颜色</h3>
+                    <p>主色、背景和卡片色会影响整个网站的观感。</p>
+                  </div>
+                  <button class="secondary-button settings-inline-button" id="settings-randomize-theme" type="button">
+                    随机配色
+                  </button>
+                </div>
+                <div class="settings-color-grid" id="settings-theme-fields"></div>
+              </div>
+
+              <div class="settings-section">
+                <div class="settings-section__header">
+                  <div>
+                    <h3>风格预设</h3>
+                    <p>点击后会替换当前草稿，配合上方预览按钮查看效果。</p>
+                  </div>
+                </div>
+                <div class="settings-preset-list" id="settings-preset-list"></div>
+              </div>
+            </section>
+
+            <section class="settings-view" data-settings-view="layout">
+              <div class="settings-section">
+                <div class="settings-section__header">
+                  <div>
+                    <h3>首页网格</h3>
+                    <p>先调整三列宽度和间距，再细调每个模块。</p>
+                  </div>
+                  <button class="secondary-button settings-inline-button" id="settings-reset-layout" type="button">
+                    重置布局
+                  </button>
+                </div>
+                <div class="settings-grid-controls">
+                  <label class="settings-field">
+                    <span>左列宽度</span>
+                    <input class="settings-input" data-settings-field="layout.grid.leftWidth" type="number" min="200" max="520" />
+                  </label>
+                  <label class="settings-field">
+                    <span>中列宽度</span>
+                    <input class="settings-input" data-settings-field="layout.grid.centerWidth" type="number" min="260" max="620" />
+                  </label>
+                  <label class="settings-field">
+                    <span>右列宽度</span>
+                    <input class="settings-input" data-settings-field="layout.grid.rightWidth" type="number" min="220" max="520" />
+                  </label>
+                  <label class="settings-field">
+                    <span>列间距</span>
+                    <input class="settings-input" data-settings-field="layout.grid.gap" type="number" min="8" max="48" />
+                  </label>
+                </div>
+              </div>
+
+              <div class="settings-section">
+                <div class="settings-section__header">
+                  <div>
+                    <h3>首页模块</h3>
+                    <p>支持调整模块所在列、顺序、尺寸、偏移和显示状态。</p>
+                  </div>
+                </div>
+                <div class="layout-editor">
+                  <div class="layout-editor__head">
+                    <span>模块</span>
+                    <span>列</span>
+                    <span>顺序</span>
+                    <span>宽度</span>
+                    <span>高度</span>
+                    <span>横向</span>
+                    <span>纵向</span>
+                    <span>启用</span>
+                  </div>
+                  <div id="settings-layout-list"></div>
+                </div>
+              </div>
+            </section>
+          </div>
+        </section>
+      </div>
     </div>
   </body>
 </html>

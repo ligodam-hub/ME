@@ -312,6 +312,138 @@ const categories = ["All", ...new Set(projects.map((project) => project.category
 const shareFilters = ["全部", ...new Set(shareResources.flatMap((resource) => resource.tags))];
 const blogFilters = ["全部", ...new Set(blogLinks.map((link) => link.kind))];
 const calendarWeekLabels = ["一", "二", "三", "四", "五", "六", "日"];
+const SETTINGS_STORAGE_KEY = "me-home-ui-settings-v1";
+const settingsThemeFields = [
+  { key: "accent", label: "主题色" },
+  { key: "accentStrong", label: "强调深色" },
+  { key: "text", label: "正文颜色" },
+  { key: "muted", label: "次级文字" },
+  { key: "surface", label: "卡片底色" },
+  { key: "pageStart", label: "背景起点" },
+  { key: "pageMid", label: "背景中段" },
+  { key: "pageEnd", label: "背景终点" },
+  { key: "glowLeft", label: "左侧光晕" },
+  { key: "glowRight", label: "右侧光晕" },
+  { key: "warm", label: "暖色点缀" },
+];
+const settingsThemePresets = [
+  {
+    id: "mist",
+    label: "晨雾",
+    description: "保留当前这版柔和、轻透的玻璃感。",
+    swatches: ["#35c8bb", "#2b7f85", "#f7f7f2", "#eef6f3"],
+    theme: {
+      accent: "#35c8bb",
+      accentStrong: "#2b7f85",
+      text: "#172126",
+      muted: "#57656d",
+      surface: "#f2f9f7",
+      pageStart: "#f7f7f2",
+      pageMid: "#eef6f3",
+      pageEnd: "#edf4f0",
+      glowLeft: "#e9e76d",
+      glowRight: "#69e1d5",
+      warm: "#f0d882",
+    },
+  },
+  {
+    id: "spring",
+    label: "春暖",
+    description: "绿色和奶油黄更明显，页面更轻快。",
+    swatches: ["#45c7b8", "#7ad08f", "#f4df62", "#9de3d4"],
+    theme: {
+      accent: "#45c7b8",
+      accentStrong: "#2e8d82",
+      text: "#20313a",
+      muted: "#60737b",
+      surface: "#f0faf6",
+      pageStart: "#fbfaef",
+      pageMid: "#eef8ef",
+      pageEnd: "#e9f6f0",
+      glowLeft: "#f3df59",
+      glowRight: "#93e2d0",
+      warm: "#f3d96d",
+    },
+  },
+  {
+    id: "autumn",
+    label: "秋实",
+    description: "偏暖、对比更高，适合做内容展示版。",
+    swatches: ["#ef7a57", "#c84a36", "#fff1d6", "#ffd278"],
+    theme: {
+      accent: "#ef7a57",
+      accentStrong: "#c84a36",
+      text: "#2d221d",
+      muted: "#7e665d",
+      surface: "#fff7ef",
+      pageStart: "#fff3dc",
+      pageMid: "#f8eee4",
+      pageEnd: "#f3ebe6",
+      glowLeft: "#ffd36d",
+      glowRight: "#ffc398",
+      warm: "#ffbf57",
+    },
+  },
+  {
+    id: "night",
+    label: "深夜",
+    description: "压暗背景和卡片，保留一层青蓝高光。",
+    swatches: ["#4e7bff", "#212c87", "#111829", "#4fcfdf"],
+    theme: {
+      accent: "#4fcfdf",
+      accentStrong: "#3462d5",
+      text: "#ecf5ff",
+      muted: "#a6bfd2",
+      surface: "#182234",
+      pageStart: "#101727",
+      pageMid: "#132133",
+      pageEnd: "#17293c",
+      glowLeft: "#3858d8",
+      glowRight: "#2dd4f3",
+      warm: "#78a4ff",
+    },
+  },
+];
+const homeLayoutItems = [
+  { id: "nav", label: "导航卡片" },
+  { id: "latest", label: "最新文章" },
+  { id: "collage", label: "首图拼贴" },
+  { id: "greeting", label: "中心欢迎" },
+  { id: "socials", label: "社交入口" },
+  { id: "clock", label: "时钟" },
+  { id: "calendar", label: "日历" },
+  { id: "music", label: "音乐模块" },
+];
+const defaultUiSettings = {
+  site: {
+    brand: siteConfig.brand,
+    homeBrand: siteConfig.homeBrand,
+    role: siteConfig.role,
+    status: siteConfig.status,
+    description: siteConfig.description,
+    email: siteConfig.contact.email,
+    avatarEmoji: "🐱",
+  },
+  theme: { ...settingsThemePresets[0].theme },
+  layout: {
+    grid: {
+      leftWidth: 280,
+      centerWidth: 420,
+      rightWidth: 320,
+      gap: 20,
+    },
+    items: {
+      nav: { column: "left", order: 1, width: 280, height: 432, offsetX: 0, offsetY: 0, enabled: true },
+      latest: { column: "left", order: 2, width: 280, height: 160, offsetX: 0, offsetY: 0, enabled: true },
+      collage: { column: "center", order: 1, width: 420, height: 208, offsetX: 0, offsetY: 0, enabled: true },
+      greeting: { column: "center", order: 2, width: 420, height: 288, offsetX: 0, offsetY: 0, enabled: true },
+      socials: { column: "center", order: 3, width: 420, height: 76, offsetX: 0, offsetY: 0, enabled: true },
+      clock: { column: "right", order: 1, width: 320, height: 125, offsetX: 0, offsetY: 0, enabled: true },
+      calendar: { column: "right", order: 2, width: 320, height: 288, offsetX: 0, offsetY: 0, enabled: true },
+      music: { column: "right", order: 3, width: 320, height: 112, offsetX: 0, offsetY: 0, enabled: true },
+    },
+  },
+};
 
 const state = {
   route: "home",
@@ -327,6 +459,8 @@ const state = {
 
 const els = {
   main: document.querySelector("main"),
+  pageRoot: document.documentElement,
+  metaDescription: document.querySelector("meta[name='description']"),
   brandName: document.getElementById("brand-name"),
   brandNameHome: document.getElementById("brand-name-home"),
   brandRole: document.getElementById("brand-role"),
@@ -364,12 +498,37 @@ const els = {
   navCardLinks: document.querySelector(".nav-card__links"),
   navCardIndicator: document.getElementById("nav-card-indicator"),
   copyEmail: document.getElementById("copy-email"),
+  homeSnapshot: document.querySelector(".home-snapshot"),
+  homeColumns: {
+    left: document.querySelector("[data-home-column='left']"),
+    center: document.querySelector("[data-home-column='center']"),
+    right: document.querySelector("[data-home-column='right']"),
+  },
+  homeLayoutItems: Object.fromEntries(
+    [...document.querySelectorAll("[data-layout-item]")].map((element) => [element.dataset.layoutItem, element]),
+  ),
+  settingsToggle: document.getElementById("settings-toggle"),
+  settingsPanel: document.getElementById("settings-panel"),
+  settingsTabs: document.getElementById("settings-tabs"),
+  settingsTabButtons: [...document.querySelectorAll("[data-settings-tab]")],
+  settingsViews: [...document.querySelectorAll("[data-settings-view]")],
+  settingsPreview: document.getElementById("settings-preview"),
+  settingsCancel: document.getElementById("settings-cancel"),
+  settingsSave: document.getElementById("settings-save"),
+  settingsRandomizeTheme: document.getElementById("settings-randomize-theme"),
+  settingsResetLayout: document.getElementById("settings-reset-layout"),
+  settingsThemeFields: document.getElementById("settings-theme-fields"),
+  settingsPresetList: document.getElementById("settings-preset-list"),
+  settingsLayoutList: document.getElementById("settings-layout-list"),
   routeSections: [...document.querySelectorAll(".route-section")],
   routeLinks: [...document.querySelectorAll("[data-route-nav]")],
 };
 
 let navCardPreviewLink = null;
 let navCardIndicatorFrame = 0;
+let savedUiSettings = null;
+let draftUiSettings = null;
+let activeSettingsTab = "site";
 
 function escapeHtml(value) {
   return String(value)
@@ -378,6 +537,136 @@ function escapeHtml(value) {
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#39;");
+}
+
+function cloneData(value) {
+  return JSON.parse(JSON.stringify(value));
+}
+
+function mergeDeep(base, override) {
+  if (Array.isArray(base)) return Array.isArray(override) ? override.slice() : base.slice();
+  if (base && typeof base === "object") {
+    const output = { ...base };
+    if (!override || typeof override !== "object") return output;
+    Object.keys(override).forEach((key) => {
+      output[key] =
+        base[key] && typeof base[key] === "object" && !Array.isArray(base[key])
+          ? mergeDeep(base[key], override[key])
+          : override[key];
+    });
+    return output;
+  }
+  return override ?? base;
+}
+
+function clampNumber(value, fallback, min, max) {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed)) return fallback;
+  return Math.min(max, Math.max(min, Math.round(parsed)));
+}
+
+function normalizeHex(value, fallback) {
+  const source = String(value || "").trim();
+  if (/^#[0-9a-f]{6}$/i.test(source)) return source.toLowerCase();
+  if (/^[0-9a-f]{6}$/i.test(source)) return `#${source.toLowerCase()}`;
+  return fallback;
+}
+
+function hexToRgba(hex, alpha) {
+  const normalized = normalizeHex(hex, "#000000").slice(1);
+  const red = Number.parseInt(normalized.slice(0, 2), 16);
+  const green = Number.parseInt(normalized.slice(2, 4), 16);
+  const blue = Number.parseInt(normalized.slice(4, 6), 16);
+  return `rgba(${red}, ${green}, ${blue}, ${alpha})`;
+}
+
+function getValueByPath(source, path) {
+  return path.split(".").reduce((current, key) => current?.[key], source);
+}
+
+function setValueByPath(source, path, value) {
+  const keys = path.split(".");
+  const lastKey = keys.pop();
+  let current = source;
+
+  keys.forEach((key) => {
+    if (!current[key] || typeof current[key] !== "object") {
+      current[key] = {};
+    }
+    current = current[key];
+  });
+
+  current[lastKey] = value;
+}
+
+function normalizeUiSettings(candidate) {
+  const merged = mergeDeep(defaultUiSettings, candidate);
+  const normalized = cloneData(merged);
+
+  normalized.site.brand = String(normalized.site.brand || defaultUiSettings.site.brand).trim() || defaultUiSettings.site.brand;
+  normalized.site.homeBrand =
+    String(normalized.site.homeBrand || defaultUiSettings.site.homeBrand).trim() || defaultUiSettings.site.homeBrand;
+  normalized.site.role = String(normalized.site.role || defaultUiSettings.site.role).trim() || defaultUiSettings.site.role;
+  normalized.site.status =
+    String(normalized.site.status || defaultUiSettings.site.status).trim() || defaultUiSettings.site.status;
+  normalized.site.description =
+    String(normalized.site.description || defaultUiSettings.site.description).trim() || defaultUiSettings.site.description;
+  normalized.site.email = String(normalized.site.email || defaultUiSettings.site.email).trim() || defaultUiSettings.site.email;
+  normalized.site.avatarEmoji =
+    Array.from(String(normalized.site.avatarEmoji || defaultUiSettings.site.avatarEmoji).trim())[0] ||
+    defaultUiSettings.site.avatarEmoji;
+
+  settingsThemeFields.forEach(({ key }) => {
+    normalized.theme[key] = normalizeHex(normalized.theme[key], defaultUiSettings.theme[key]);
+  });
+
+  normalized.layout.grid.leftWidth = clampNumber(
+    normalized.layout.grid.leftWidth,
+    defaultUiSettings.layout.grid.leftWidth,
+    200,
+    520,
+  );
+  normalized.layout.grid.centerWidth = clampNumber(
+    normalized.layout.grid.centerWidth,
+    defaultUiSettings.layout.grid.centerWidth,
+    260,
+    620,
+  );
+  normalized.layout.grid.rightWidth = clampNumber(
+    normalized.layout.grid.rightWidth,
+    defaultUiSettings.layout.grid.rightWidth,
+    220,
+    520,
+  );
+  normalized.layout.grid.gap = clampNumber(normalized.layout.grid.gap, defaultUiSettings.layout.grid.gap, 8, 48);
+
+  homeLayoutItems.forEach(({ id }) => {
+    const fallback = defaultUiSettings.layout.items[id];
+    const item = normalized.layout.items[id] || fallback;
+    item.column = ["left", "center", "right"].includes(item.column) ? item.column : fallback.column;
+    item.order = clampNumber(item.order, fallback.order, 1, 12);
+    item.width = clampNumber(item.width, fallback.width, 140, 620);
+    item.height = clampNumber(item.height, fallback.height, 60, 720);
+    item.offsetX = clampNumber(item.offsetX, fallback.offsetX, -180, 180);
+    item.offsetY = clampNumber(item.offsetY, fallback.offsetY, -180, 180);
+    item.enabled = Boolean(item.enabled);
+    normalized.layout.items[id] = item;
+  });
+
+  return normalized;
+}
+
+function loadSavedUiSettings() {
+  try {
+    const stored = window.localStorage.getItem(SETTINGS_STORAGE_KEY);
+    return stored ? normalizeUiSettings(JSON.parse(stored)) : cloneData(defaultUiSettings);
+  } catch {
+    return cloneData(defaultUiSettings);
+  }
+}
+
+function persistUiSettings(settings) {
+  window.localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings));
 }
 
 function getRouteFromHash() {
@@ -510,6 +799,238 @@ function renderShell() {
   els.quoteText.textContent = siteConfig.quote;
 
   renderCalendar();
+}
+
+function applySiteSettings(site) {
+  siteConfig.brand = site.brand;
+  siteConfig.homeBrand = site.homeBrand;
+  siteConfig.role = site.role;
+  siteConfig.status = site.status;
+  siteConfig.description = site.description;
+  siteConfig.contact.email = site.email;
+
+  document.title = `${site.brand} | 作品集与导航站`;
+  els.metaDescription?.setAttribute("content", site.description);
+  els.pageRoot.style.setProperty("--avatar-emoji", JSON.stringify(site.avatarEmoji));
+
+  renderShell();
+}
+
+function applyThemeSettings(theme) {
+  els.pageRoot.style.setProperty("--accent", theme.accent);
+  els.pageRoot.style.setProperty("--accent-soft", hexToRgba(theme.accent, 0.12));
+  els.pageRoot.style.setProperty("--accent-strong", theme.accentStrong);
+  els.pageRoot.style.setProperty("--text", theme.text);
+  els.pageRoot.style.setProperty("--muted", theme.muted);
+  els.pageRoot.style.setProperty("--line", hexToRgba(theme.text, 0.1));
+  els.pageRoot.style.setProperty("--bg-elevated", hexToRgba(theme.surface, 0.76));
+  els.pageRoot.style.setProperty("--bg-strong", hexToRgba(theme.surface, 0.94));
+  els.pageRoot.style.setProperty("--warm", theme.warm);
+  els.pageRoot.style.setProperty("--page-grad-start", theme.pageStart);
+  els.pageRoot.style.setProperty("--page-grad-mid", theme.pageMid);
+  els.pageRoot.style.setProperty("--page-grad-end", theme.pageEnd);
+  els.pageRoot.style.setProperty("--glow-left", hexToRgba(theme.glowLeft, 0.3));
+  els.pageRoot.style.setProperty("--glow-right", hexToRgba(theme.glowRight, 0.24));
+  els.pageRoot.style.setProperty("--home-card-surface", hexToRgba(theme.surface, 0.56));
+}
+
+function applyHomeLayoutSettings(layout) {
+  if (!els.homeSnapshot) return;
+
+  els.homeSnapshot.style.setProperty("--home-col-left", `${layout.grid.leftWidth}px`);
+  els.homeSnapshot.style.setProperty("--home-col-center", `${layout.grid.centerWidth}px`);
+  els.homeSnapshot.style.setProperty("--home-col-right", `${layout.grid.rightWidth}px`);
+  els.homeSnapshot.style.setProperty("--home-gap", `${layout.grid.gap}px`);
+
+  const grouped = { left: [], center: [], right: [] };
+
+  homeLayoutItems.forEach(({ id }) => {
+    const element = els.homeLayoutItems[id];
+    const config = layout.items[id];
+    if (!element || !config) return;
+
+    element.hidden = !config.enabled;
+    element.style.width = `${config.width}px`;
+    element.style.maxWidth = "100%";
+    element.style.minHeight = `${config.height}px`;
+    element.style.transform = `translate(${config.offsetX}px, ${config.offsetY}px)`;
+    element.style.order = String(config.order);
+
+    grouped[config.column].push({ element, order: config.order });
+  });
+
+  Object.entries(grouped).forEach(([column, items]) => {
+    const container = els.homeColumns[column];
+    if (!container) return;
+
+    items
+      .sort((left, right) => left.order - right.order)
+      .forEach(({ element }) => {
+        container.appendChild(element);
+      });
+  });
+
+  queueNavCardIndicatorUpdate();
+}
+
+function applyUiSettings(settings, { persist = false } = {}) {
+  const normalized = normalizeUiSettings(settings);
+  applySiteSettings(normalized.site);
+  applyThemeSettings(normalized.theme);
+  applyHomeLayoutSettings(normalized.layout);
+
+  if (persist) {
+    savedUiSettings = cloneData(normalized);
+    persistUiSettings(savedUiSettings);
+  }
+
+  return normalized;
+}
+
+function setActiveSettingsTab(tab) {
+  activeSettingsTab = tab;
+  els.settingsTabButtons.forEach((button) => {
+    const active = button.dataset.settingsTab === tab;
+    button.classList.toggle("active", active);
+    button.setAttribute("aria-selected", String(active));
+  });
+  els.settingsViews.forEach((view) => {
+    view.classList.toggle("active", view.dataset.settingsView === tab);
+  });
+}
+
+function syncStaticSettingsInputs() {
+  if (!draftUiSettings || !els.settingsPanel) return;
+
+  els.settingsPanel.querySelectorAll("[data-settings-field]").forEach((input) => {
+    if (!(input instanceof HTMLInputElement || input instanceof HTMLTextAreaElement || input instanceof HTMLSelectElement)) {
+      return;
+    }
+
+    if (input.closest("#settings-theme-fields") || input.closest("#settings-layout-list")) {
+      return;
+    }
+
+    const value = getValueByPath(draftUiSettings, input.dataset.settingsField);
+    if (input.type === "checkbox") {
+      input.checked = Boolean(value);
+    } else {
+      input.value = value ?? "";
+    }
+  });
+}
+
+function renderThemeFields() {
+  if (!draftUiSettings || !els.settingsThemeFields) return;
+
+  els.settingsThemeFields.innerHTML = settingsThemeFields
+    .map(({ key, label }) => {
+      const value = draftUiSettings.theme[key];
+      return `
+        <label class="settings-color-card">
+          <div class="settings-color-card__top">
+            <div>
+              <strong>${escapeHtml(label)}</strong>
+              <code>${escapeHtml(value)}</code>
+            </div>
+            <span class="settings-color-card__swatch" style="background:${escapeHtml(value)}"></span>
+          </div>
+          <input class="settings-color-input" data-settings-field="theme.${escapeHtml(key)}" type="color" value="${escapeHtml(value)}" />
+        </label>
+      `;
+    })
+    .join("");
+}
+
+function renderThemePresets() {
+  if (!els.settingsPresetList) return;
+
+  els.settingsPresetList.innerHTML = settingsThemePresets
+    .map(
+      (preset) => `
+        <button class="settings-preset" data-theme-preset="${escapeHtml(preset.id)}" type="button">
+          <span class="settings-preset__swatches">
+            ${preset.swatches.map((swatch) => `<span style="background:${escapeHtml(swatch)}"></span>`).join("")}
+          </span>
+          <span class="settings-preset__meta">
+            <strong>${escapeHtml(preset.label)}</strong>
+            <small>${escapeHtml(preset.description)}</small>
+          </span>
+        </button>
+      `,
+    )
+    .join("");
+}
+
+function renderLayoutEditor() {
+  if (!draftUiSettings || !els.settingsLayoutList) return;
+
+  els.settingsLayoutList.innerHTML = homeLayoutItems
+    .map(({ id, label }) => {
+      const item = draftUiSettings.layout.items[id];
+      return `
+        <div class="layout-row">
+          <span class="layout-row__title">${escapeHtml(label)}</span>
+          <select class="layout-select" data-settings-field="layout.items.${escapeHtml(id)}.column">
+            <option value="left" ${item.column === "left" ? "selected" : ""}>左列</option>
+            <option value="center" ${item.column === "center" ? "selected" : ""}>中列</option>
+            <option value="right" ${item.column === "right" ? "selected" : ""}>右列</option>
+          </select>
+          <input class="layout-input" data-settings-field="layout.items.${escapeHtml(id)}.order" type="number" min="1" max="12" value="${escapeHtml(String(item.order))}" />
+          <input class="layout-input" data-settings-field="layout.items.${escapeHtml(id)}.width" type="number" min="140" max="620" value="${escapeHtml(String(item.width))}" />
+          <input class="layout-input" data-settings-field="layout.items.${escapeHtml(id)}.height" type="number" min="60" max="720" value="${escapeHtml(String(item.height))}" />
+          <input class="layout-input" data-settings-field="layout.items.${escapeHtml(id)}.offsetX" type="number" min="-180" max="180" value="${escapeHtml(String(item.offsetX))}" />
+          <input class="layout-input" data-settings-field="layout.items.${escapeHtml(id)}.offsetY" type="number" min="-180" max="180" value="${escapeHtml(String(item.offsetY))}" />
+          <label class="layout-toggle">
+            <input data-settings-field="layout.items.${escapeHtml(id)}.enabled" type="checkbox" ${item.enabled ? "checked" : ""} />
+          </label>
+        </div>
+      `;
+    })
+    .join("");
+}
+
+function renderSettingsPanel() {
+  syncStaticSettingsInputs();
+  renderThemeFields();
+  renderThemePresets();
+  renderLayoutEditor();
+  setActiveSettingsTab(activeSettingsTab);
+}
+
+function openSettingsPanel() {
+  draftUiSettings = cloneData(savedUiSettings);
+  activeSettingsTab = "site";
+  renderSettingsPanel();
+  els.settingsPanel.hidden = false;
+  els.settingsToggle?.setAttribute("aria-expanded", "true");
+  document.body.classList.add("settings-open");
+}
+
+function closeSettingsPanel({ restoreSaved = true } = {}) {
+  if (restoreSaved && savedUiSettings) {
+    applyUiSettings(savedUiSettings);
+  }
+
+  if (els.settingsPanel) {
+    els.settingsPanel.hidden = true;
+  }
+  els.settingsToggle?.setAttribute("aria-expanded", "false");
+  document.body.classList.remove("settings-open");
+}
+
+function updateDraftSetting(field, rawValue, inputType = "text") {
+  if (!draftUiSettings) return;
+
+  let value = rawValue;
+  if (inputType === "number") {
+    value = Number(rawValue);
+  } else if (inputType === "checkbox") {
+    value = Boolean(rawValue);
+  }
+
+  setValueByPath(draftUiSettings, field, value);
+  draftUiSettings = normalizeUiSettings(draftUiSettings);
 }
 
 function renderArticles() {
@@ -1045,6 +1566,93 @@ function bindEvents() {
   });
 
   els.copyEmail.addEventListener("click", copyEmail);
+  els.settingsToggle?.addEventListener("click", () => {
+    if (els.settingsPanel?.hidden) {
+      openSettingsPanel();
+      return;
+    }
+    closeSettingsPanel();
+  });
+  els.settingsTabs?.addEventListener("click", (event) => {
+    const target = event.target.closest("[data-settings-tab]");
+    if (!target) return;
+    setActiveSettingsTab(target.dataset.settingsTab);
+  });
+  els.settingsPreview?.addEventListener("click", () => {
+    draftUiSettings = normalizeUiSettings(draftUiSettings);
+    applyUiSettings(draftUiSettings);
+  });
+  els.settingsCancel?.addEventListener("click", () => {
+    closeSettingsPanel();
+  });
+  els.settingsSave?.addEventListener("click", () => {
+    draftUiSettings = applyUiSettings(draftUiSettings, { persist: true });
+    closeSettingsPanel({ restoreSaved: false });
+  });
+  els.settingsRandomizeTheme?.addEventListener("click", () => {
+    const preset =
+      settingsThemePresets[Math.floor(Math.random() * settingsThemePresets.length)] ?? settingsThemePresets[0];
+    draftUiSettings.theme = cloneData(preset.theme);
+    renderThemeFields();
+  });
+  els.settingsResetLayout?.addEventListener("click", () => {
+    draftUiSettings.layout = cloneData(defaultUiSettings.layout);
+    syncStaticSettingsInputs();
+    renderLayoutEditor();
+  });
+
+  els.settingsPanel?.addEventListener("click", (event) => {
+    const dismissTarget = event.target.closest("[data-settings-dismiss]");
+    if (dismissTarget) {
+      closeSettingsPanel();
+      return;
+    }
+
+    const presetTarget = event.target.closest("[data-theme-preset]");
+    if (!presetTarget) return;
+
+    const preset = settingsThemePresets.find((item) => item.id === presetTarget.dataset.themePreset);
+    if (!preset) return;
+
+    draftUiSettings.theme = cloneData(preset.theme);
+    renderThemeFields();
+  });
+
+  const handleSettingsFieldEvent = (event, shouldRefresh) => {
+    const target = event.target;
+    if (
+      !(target instanceof HTMLInputElement) &&
+      !(target instanceof HTMLTextAreaElement) &&
+      !(target instanceof HTMLSelectElement)
+    ) {
+      return;
+    }
+
+    const field = target.dataset.settingsField;
+    if (!field) return;
+
+    const rawValue = target.type === "checkbox" ? target.checked : target.value;
+    updateDraftSetting(field, rawValue, target.type);
+
+    if (!shouldRefresh) return;
+    if (field.startsWith("theme.")) {
+      renderThemeFields();
+      return;
+    }
+    if (field.startsWith("layout.")) {
+      syncStaticSettingsInputs();
+      renderLayoutEditor();
+    }
+  };
+
+  els.settingsPanel?.addEventListener("input", (event) => handleSettingsFieldEvent(event, false));
+  els.settingsPanel?.addEventListener("change", (event) => handleSettingsFieldEvent(event, true));
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !els.settingsPanel?.hidden) {
+      closeSettingsPanel();
+    }
+  });
   window.addEventListener("resize", queueNavCardIndicatorUpdate);
 
   if (document.fonts?.ready) {
@@ -1079,8 +1687,10 @@ function init() {
   }
 
   state.route = getRouteFromHash();
+  savedUiSettings = loadSavedUiSettings();
+  draftUiSettings = cloneData(savedUiSettings);
 
-  renderShell();
+  applyUiSettings(savedUiSettings);
   renderArticles();
   renderProjectFilters();
   renderProjects();
@@ -1090,6 +1700,7 @@ function init() {
   renderBlogLinks();
   renderTimeline();
   updateRouteUi();
+  renderSettingsPanel();
   bindEvents();
   queueNavCardIndicatorUpdate();
   window.setInterval(() => {
