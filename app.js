@@ -254,6 +254,8 @@ const els = {
   quoteText: document.getElementById("quote-text"),
   menuToggle: document.getElementById("menu-toggle"),
   siteNav: document.getElementById("site-nav"),
+  navCardLinks: document.querySelector(".nav-card__links"),
+  navCardIndicator: document.getElementById("nav-card-indicator"),
   copyEmail: document.getElementById("copy-email"),
   shuffleSpotlight: document.getElementById("shuffle-spotlight"),
   routeSections: [...document.querySelectorAll(".route-section")],
@@ -533,6 +535,28 @@ function renderTimeline() {
     .join("");
 }
 
+function updateNavCardIndicator() {
+  if (!els.navCardLinks || !els.navCardIndicator) return;
+  if (els.navCardLinks.offsetParent === null) return;
+
+  const activeLink =
+    els.navCardLinks.querySelector("a.active") ?? els.navCardLinks.querySelector("a");
+
+  if (!activeLink) {
+    els.navCardIndicator.style.opacity = "0";
+    return;
+  }
+
+  els.navCardIndicator.style.width = `${activeLink.offsetWidth}px`;
+  els.navCardIndicator.style.height = `${activeLink.offsetHeight}px`;
+  els.navCardIndicator.style.transform = `translate3d(${activeLink.offsetLeft}px, ${activeLink.offsetTop}px, 0)`;
+  els.navCardIndicator.style.opacity = "1";
+}
+
+function queueNavCardIndicatorUpdate() {
+  window.requestAnimationFrame(updateNavCardIndicator);
+}
+
 function refreshLiveTime() {
   const greeting = getGreetingByHour(new Date().getHours());
   const nextTitle = `${escapeHtml(greeting)}<br />I'm <span class="accent-name">${escapeHtml(siteConfig.homeBrand)}</span>, nice to meet you!`;
@@ -561,6 +585,7 @@ function updateRouteUi() {
   document.body.setAttribute("data-route", state.route);
   els.siteNav.classList.remove("open");
   els.menuToggle.setAttribute("aria-expanded", "false");
+  queueNavCardIndicatorUpdate();
 }
 
 async function copyEmail() {
@@ -607,6 +632,12 @@ function bindEvents() {
     renderSpotlight();
   });
 
+  window.addEventListener("resize", queueNavCardIndicatorUpdate);
+
+  if (document.fonts?.ready) {
+    document.fonts.ready.then(queueNavCardIndicatorUpdate);
+  }
+
   document.addEventListener("click", (event) => {
     const actionTarget = event.target.closest("[data-action='copy-email']");
     if (!actionTarget) return;
@@ -629,6 +660,7 @@ function init() {
   renderTimeline();
   updateRouteUi();
   bindEvents();
+  queueNavCardIndicatorUpdate();
   window.setInterval(refreshLiveTime, 1000);
 }
 
